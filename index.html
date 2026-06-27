@@ -488,7 +488,8 @@
       gap: 1rem; flex-wrap: wrap;
       background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
       border-radius: var(--r-2xl); padding: 1.5rem;
-      margin-bottom: 1.75rem;
+      margin-top: 2rem;
+      margin-bottom: 1.5rem;
     }
     .cta-asuransi-left { flex: 1; min-width: 200px; }
     .cta-asuransi-label {
@@ -629,9 +630,27 @@
       border-radius: var(--r-full); transition: all var(--transition);
     }
     .btn-reset:hover { border-color: var(--gold); color: var(--navy); }
+
+    /* Tambahkan ini tepat sebelum tag </style> */
+    .top-disclaimer {
+      background-color: #FFFBEB;
+      border-bottom: 1px solid #FDE68A;
+      color: #92400E;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      padding: 0.75rem 1.5rem;
+      text-align: center;
+      position: relative;
+      z-index: 1001;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Sisipkan kode ini tepat di bawah tag <body> -->
+<div class="top-disclaimer">
+  Platform ini diterbitkan secara otomatis oleh sistem komputasi HitungRisiko berdasarkan input pengguna. Dokumen ini bukan merupakan produk jasa keuangan resmi yang diregulasi OJK dan tidak menggantikan saran profesional aktuaris berlisensi. Hasil kalkulasi bersifat indikatif dan edukatif.
+</div>
 
 <!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
 <nav class="navbar" role="banner">
@@ -919,18 +938,18 @@
         <!-- Signature -->
         <div class="cert-signature">
           <div class="sig-block">
-            <div class="sig-digital" id="cert-sig-name">RiskCerdas System</div>
+            <div class="sig-digital" id="cert-sig-name">HitungRisiko System</div>
             <div class="sig-label">Tanda Tangan Digital — Pemilik Usaha</div>
             <div class="sig-label" style="margin-top:3px;" id="cert-nama-pemilik-sig">—</div>
           </div>
           <div class="sig-block" style="display:flex;gap:1.25rem;align-items:flex-end;">
             <div>
-              <div class="sig-digital">RiskCerdas System</div>
+              <div class="sig-digital">HitungRisiko System</div>
               <div class="sig-label">Diverifikasi Otomatis</div>
               <div class="sig-label" style="font-family:monospace;font-size:0.6rem;" id="cert-hash">SHA-256: —</div>
             </div>
             <div class="sig-stamp">
-              <div class="sig-stamp-text">PLATFORM<br/>RISKCERDAS<br/>INDONESIA</div>
+              <div class="sig-stamp-text">PLATFORM<br/>HitungRisiko<br/>INDONESIA</div>
               <div class="sig-stamp-year" id="cert-stamp-year">2026</div>
             </div>
           </div>
@@ -938,11 +957,24 @@
 
         <!-- Disclaimer -->
         <div class="cert-disclaimer">
-          Dokumen ini diterbitkan secara otomatis oleh sistem komputasi RiskCerdas.id berdasarkan input pengguna. Dokumen ini bukan merupakan produk jasa keuangan resmi yang diregulasi OJK dan tidak menggantikan saran profesional aktuaris berlisensi. Hasil kalkulasi bersifat indikatif dan edukatif.
+          Dokumen ini diterbitkan secara otomatis oleh sistem komputasi HitungRisiko berdasarkan input pengguna. Dokumen ini bukan merupakan produk jasa keuangan resmi yang diregulasi OJK dan tidak menggantikan saran profesional aktuaris berlisensi. Hasil kalkulasi bersifat indikatif dan edukatif.
         </div>
 
       </div><!-- /cert-inner -->
     </div><!-- /cert-outer -->
+
+    </div> <div class="cta-asuransi">
+      <div class="cta-asuransi-left">
+        <div class="cta-asuransi-label">Rekomendasi Perlindungan</div>
+        <div class="cta-asuransi-text">Amankan Kelangsungan UMKM Anda dengan Asuransi Astra Mikro</div>
+      </div>
+      <a href="#" class="cta-asuransi-btn">
+        Pelajari Selengkapnya
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:16px; height:16px;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+        </svg>
+      </a>
+    </div>
 
     <div class="text-center">
       <button class="btn-reset" onclick="resetWizard()">
