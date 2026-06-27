@@ -563,6 +563,28 @@
       padding-top: 1rem; border-top: 1px solid rgba(11,19,43,0.06);
     }
 
+    /* Download row (di luar sertifikat) */
+    .cert-download-row {
+      display: flex; justify-content: center; align-items: center;
+      margin: 1.75rem 0 0.5rem;
+    }
+    .btn-download {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--navy); color: var(--white);
+      font-weight: 700; font-size: 0.88rem;
+      padding: 0.85rem 2.1rem; border-radius: var(--r-full);
+      border: 1.5px solid var(--gold);
+      box-shadow: 0 4px 20px rgba(11,19,43,0.18);
+      transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+    }
+    .btn-download:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(11,19,43,0.3); }
+    .btn-download:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-download svg { width: 17px; height: 17px; flex-shrink: 0; }
+    .download-hint {
+      text-align: center; font-size: 0.72rem; color: var(--slate);
+      margin-bottom: 0.5rem;
+    }
+
     /* ========================= EDU SECTION ========================= */
     .edu-section { background: var(--navy); padding: 5rem 1.5rem; }
     .edu-section .section-title { color: var(--white); }
@@ -839,8 +861,8 @@
 <section id="certificate-section">
   <div class="cert-wrapper">
 
-    <!-- Cert outer double border -->
-    <div class="cert-outer">
+    <!-- Cert outer double border (area yang ditangkap untuk diunduh) -->
+    <div class="cert-outer" id="cert-print-area">
       <div class="cert-inner">
 
         <!-- Header -->
@@ -919,18 +941,6 @@
         <!-- Loss Aversion / Expansion Module -->
         <div id="cert-action-block"></div>
 
-        <!-- CTA Asuransi -->
-        <div class="cta-asuransi" id="cert-cta-block" style="display:none;">
-          <div class="cta-asuransi-left">
-            <div class="cta-asuransi-label">Rekomendasi Proteksi</div>
-            <div class="cta-asuransi-text" id="cert-cta-text">Lindungi bisnis Anda dengan asuransi mikro terpercaya.</div>
-          </div>
-          <a href="https://asuransiastra.com" target="_blank" rel="noopener noreferrer" class="cta-asuransi-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            Asuransi Astra Mikro
-          </a>
-        </div>
-
         <!-- Signature -->
         <div class="cert-signature">
           <div class="sig-block">
@@ -959,16 +969,24 @@
       </div><!-- /cert-inner -->
     </div><!-- /cert-outer -->
 
-    </div> <div class="cta-asuransi">
+    <!-- Tombol Unduh Sertifikat (di luar area sertifikat) -->
+    <div class="cert-download-row">
+      <button class="btn-download" id="btn-download-cert" onclick="downloadCertificate()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+        <span id="btn-download-label">Unduh Sertifikat (PNG)</span>
+      </button>
+    </div>
+    <p class="download-hint">Sertifikat akan diunduh sebagai gambar resolusi tinggi yang dapat dicetak atau dibagikan.</p>
+
+    <!-- CTA Asuransi — di luar sertifikat -->
+    <div class="cta-asuransi" id="cert-cta-block" style="display:none;">
       <div class="cta-asuransi-left">
-        <div class="cta-asuransi-label">Rekomendasi Perlindungan</div>
-        <div class="cta-asuransi-text">Amankan Kelangsungan UMKM Anda dengan Asuransi Astra Mikro</div>
+        <div class="cta-asuransi-label">Rekomendasi Proteksi</div>
+        <div class="cta-asuransi-text" id="cert-cta-text">Lindungi bisnis Anda dengan asuransi mikro terpercaya.</div>
       </div>
-      <a href="#" class="cta-asuransi-btn">
-        Pelajari Selengkapnya
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:16px; height:16px;">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-        </svg>
+      <a href="https://asuransiastra.com" target="_blank" rel="noopener noreferrer" class="cta-asuransi-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        Asuransi Astra Mikro
       </a>
     </div>
 
@@ -1017,7 +1035,7 @@
 <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
 <footer class="footer">
   <div class="footer-brand">HitungRisiko</div>
-  
+
   <!-- Bagian Disclaimer Lengkap yang Menyatu Profesional -->
   <div class="footer-legal" style="margin-bottom: 1.25rem; opacity: 0.6; line-height: 1.6; max-width: 650px; margin-left: auto; margin-right: auto;">
     Platform ini diterbitkan secara otomatis oleh sistem komputasi HitungRisiko berdasarkan input pengguna. Platform ini bukan merupakan produk jasa keuangan resmi yang diregulasi OJK dan tidak menggantikan saran profesional aktuaris berlisensi. Hasil kalkulasi bersifat indikatif dan edukatif.
@@ -1027,6 +1045,9 @@
     &copy; 2026 HitungRisiko — Platform Literasi Keuangan UMKM Indonesia
   </div>
 </footer>
+
+<!-- ═══════════════════════ LIBRARY: html2canvas (untuk unduh sertifikat) ═══════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <!-- ═══════════════════════ JAVASCRIPT ═══════════════════════ -->
 <script>
@@ -1355,7 +1376,6 @@
       document.getElementById('cert-cta-text').textContent = `Pertahankan kondisi stabil ${sectorLabel} Anda dengan proteksi asuransi mikro terencana sejak dini.`;
     } else {
       // Loss aversion block
-      const lossPerPorsi  = Math.round(expectedLoss / 100); // simulasi nilai per unit usaha
       const porsiEquiv    = Math.round(expectedLoss / (omset / 200));
       let lossText = '';
       if (selectedSector === 'kuliner') {
@@ -1388,6 +1408,45 @@
     certSection.classList.add('fade-up');
     setTimeout(() => certSection.classList.remove('fade-up'), 600);
     certSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ─────── DOWNLOAD SERTIFIKAT (PNG) ─────── */
+  function downloadCertificate() {
+    const btn = document.getElementById('btn-download-cert');
+    const label = document.getElementById('btn-download-label');
+    const target = document.getElementById('cert-print-area');
+
+    if (typeof html2canvas === 'undefined') {
+      alert('Gagal memuat modul unduh. Periksa koneksi internet Anda dan coba lagi.');
+      return;
+    }
+
+    const originalLabel = label.textContent;
+    btn.disabled = true;
+    label.textContent = 'Memproses Sertifikat...';
+
+    html2canvas(target, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#F8FAFC',
+      logging: false
+    }).then(function (canvas) {
+      const certId = (document.getElementById('cert-id').textContent || 'sertifikat')
+        .replace(/[^a-zA-Z0-9]+/g, '-');
+      const link = document.createElement('a');
+      link.download = 'Sertifikat-HitungRisiko-' + certId + '.png';
+      link.href = canvas.toDataURL('image/png', 1.0);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }).catch(function (err) {
+      console.error('Gagal mengunduh sertifikat:', err);
+      alert('Terjadi kendala saat membuat file unduhan. Silakan coba lagi.');
+    }).finally(function () {
+      btn.disabled = false;
+      label.textContent = originalLabel;
+    });
   }
 
   /* ─────── RESET ─────── */
