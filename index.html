@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RiskCerdas.id — Audit Risiko Aktuaria UMKM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ========================= TOKENS ========================= */
+    :root {
+      --navy:    #0B132B;
+      --navy-80: rgba(11,19,43,0.80);
+      --navy-mid:#162040;
+      --gold:    #D4AF37;
+      --gold-lt: #F0D060;
+      --gold-dk: #A8891F;
+      --pearl:   #F8FAFC;
+      --slate:   #64748B;
+      --slate-lt:#CBD5E1;
+      --red:     #DC2626;
+      --yellow:  #D97706;
+      --green:   #16A34A;
+      --white:   #FFFFFF;
+
+      --r-sm:  0.75rem;
+      --r-md:  1rem;
+      --r-lg:  1.25rem;
+      --r-xl:  1.5rem;
+      --r-2xl: 1.75rem;
+      --r-3xl: 2rem;
+      --r-full:9999px;
+
+      --shadow-gold: 0 4px 32px rgba(212,175,55,0.18);
+      --shadow-card: 0 2px 24px rgba(11,19,43,0.08);
+      --shadow-xl:   0 8px 48px rgba(11,19,43,0.12);
+
+      --transition: 0.38s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ========================= RESET ========================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--pearl);
+      color: var(--navy);
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    button { font-family: inherit; cursor: pointer; border: none; outline: none; }
+    input, select { font-family: inherit; outline: none; }
+
+    /* ========================= SCROLLBAR ========================= */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--pearl); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dk); border-radius: 99px; }
+
+    /* ========================= NAVBAR ========================= */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--navy);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212,175,55,0.18);
+      padding: 0 1.5rem;
+      height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.75rem;
+      text-decoration: none;
+    }
+    .logo-capsule {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      border: 2px solid var(--gold);
+      border-radius: var(--r-full);
+      padding: 0.35rem 1.1rem 0.38rem;
+      line-height: 1;
+    }
+    .logo-main {
+      font-size: 0.8rem; font-weight: 900; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--white);
+      font-family: 'Inter', sans-serif;
+    }
+    .logo-tagline {
+      font-size: 0.4rem; font-weight: 400; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--gold);
+      margin-top: 0.18rem; white-space: nowrap;
+    }
+    .nav-badge {
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.3);
+      color: var(--gold);
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
+      padding: 0.28rem 0.75rem; border-radius: var(--r-full);
+    }
+
+    /* ========================= HERO ========================= */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(145deg, var(--navy) 0%, var(--navy-mid) 60%, #1a2d5a 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 100px 1.5rem 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(212,175,55,0.08);
+      border: 1px solid rgba(212,175,55,0.3);
+      color: var(--gold); font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 0.4rem 1rem; border-radius: var(--r-full);
+      margin-bottom: 1.75rem;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block; width: 6px; height: 6px;
+      background: var(--gold); border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.4; transform:scale(0.7); }
+    }
+    .hero-title {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 900; color: var(--white); line-height: 1.1;
+      letter-spacing: -0.02em; margin-bottom: 1.25rem;
+    }
+    .hero-title span { color: var(--gold); }
+    .hero-subtitle {
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: rgba(255,255,255,0.62); max-width: 560px;
+      line-height: 1.7; margin: 0 auto 2.5rem;
+      font-weight: 400;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-lt) 50%, var(--gold) 100%);
+      color: var(--navy); font-weight: 800; font-size: 0.95rem;
+      padding: 0.9rem 2.2rem; border-radius: var(--r-full);
+      box-shadow: 0 4px 28px rgba(212,175,55,0.38);
+      transition: transform var(--transition), box-shadow var(--transition);
+      text-decoration: none;
+    }
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 40px rgba(212,175,55,0.52);
+    }
+    .hero-cta svg { width: 18px; height: 18px; }
+    .hero-stats {
+      display: flex; gap: 2.5rem; justify-content: center; flex-wrap: wrap;
+      margin-top: 4rem; padding-top: 2.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .hero-stat-item { text-align: center; }
+    .hero-stat-num {
+      font-size: 1.9rem; font-weight: 900; color: var(--gold); line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 0.72rem; color: rgba(255,255,255,0.45);
+      margin-top: 0.3rem; letter-spacing: 0.06em;
+    }
+
+    /* ========================= SECTION WRAPPER ========================= */
+    .section { padding: 5rem 1.5rem; }
+    .section-inner { max-width: 900px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-eyebrow {
+      display: inline-block; color: var(--gold); font-size: 0.72rem;
+      font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800;
+      color: var(--navy); line-height: 1.2;
+    }
+
+    /* ========================= WIZARD ========================= */
+    #wizard-section { background: var(--pearl); }
+
+    .wizard-progress {
+      display: flex; align-items: center; gap: 0; margin-bottom: 2.5rem;
+      max-width: 480px; margin-left: auto; margin-right: auto;
+    }
+    .wp-step {
+      flex: 1; display: flex; flex-direction: column; align-items: center; position: relative;
+    }
+    .wp-step:not(:last-child)::after {
+      content: ''; position: absolute; top: 18px; left: 50%; right: -50%;
+      height: 2px; background: var(--slate-lt); z-index: 0;
+    }
+    .wp-step.active:not(:last-child)::after,
+    .wp-step.done:not(:last-child)::after { background: var(--gold); }
+    .wp-dot {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid var(--slate-lt); background: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 700; color: var(--slate);
+      position: relative; z-index: 1; transition: all var(--transition);
+    }
+    .wp-step.active .wp-dot {
+      border-color: var(--gold); background: var(--gold); color: var(--navy);
+      box-shadow: 0 0 0 5px rgba(212,175,55,0.18);
+    }
+    .wp-step.done .wp-dot {
+      border-color: var(--gold); background: var(--gold); color: var(--navy);
+    }
+    .wp-label {
+      font-size: 0.68rem; font-weight: 600; color: var(--slate);
+      margin-top: 0.4rem; text-align: center;
+    }
+    .wp-step.active .wp-label { color: var(--navy); }
+
+    /* Wizard card */
+    .wizard-card {
+      background: var(--white);
+      border: 1px solid rgba(11,19,43,0.07);
+      border-radius: var(--r-3xl);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-card);
+      max-width: 720px; margin: 0 auto;
+    }
+    .wizard-stage { display: none; }
+    .wizard-stage.active { display: block; }
+
+    .stage-title {
+      font-size: 1.3rem; font-weight: 800; color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+    .stage-desc {
+      font-size: 0.85rem; color: var(--slate); margin-bottom: 1.75rem; line-height: 1.6;
+    }
+
+    /* Sector cards */
+    .sector-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+      gap: 1rem; margin-bottom: 1.75rem;
+    }
+    .sector-card {
+      border: 2px solid var(--slate-lt);
+      border-radius: var(--r-2xl); padding: 1.5rem 1rem;
+      text-align: center; cursor: pointer;
+      transition: all var(--transition); background: var(--white);
+    }
+    .sector-card:hover {
+      border-color: var(--gold);
+      box-shadow: var(--shadow-gold);
+      transform: translateY(-2px);
+    }
+    .sector-card.selected {
+      border-color: var(--gold);
+      background: linear-gradient(135deg,rgba(212,175,55,0.06) 0%,rgba(212,175,55,0.02) 100%);
+      box-shadow: var(--shadow-gold);
+    }
+    .sector-icon {
+      font-size: 2.2rem; margin-bottom: 0.6rem; display: block;
+    }
+    .sector-name {
+      font-size: 0.85rem; font-weight: 700; color: var(--navy); line-height: 1.3;
+    }
+    .sector-sub {
+      font-size: 0.72rem; color: var(--slate); margin-top: 0.25rem;
+    }
+
+    /* Form elements */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label {
+      display: block; font-size: 0.8rem; font-weight: 600; color: var(--navy);
+      margin-bottom: 0.4rem; letter-spacing: 0.02em;
+    }
+    .form-label span { color: var(--gold); margin-left: 3px; }
+    .form-input, .form-select {
+      width: 100%; padding: 0.75rem 1rem;
+      border: 1.5px solid var(--slate-lt);
+      border-radius: var(--r-lg); font-size: 0.88rem;
+      color: var(--navy); background: var(--pearl);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      appearance: none; -webkit-appearance: none;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
+      background: var(--white);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+
+    .form-divider {
+      border: none; border-top: 1px solid var(--slate-lt);
+      margin: 1.5rem 0;
+    }
+    .form-section-title {
+      font-size: 0.75rem; font-weight: 700; color: var(--slate);
+      letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    /* Slider */
+    .slider-group { margin-bottom: 1.25rem; }
+    .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+    .slider-val {
+      font-size: 0.78rem; font-weight: 700; color: var(--gold);
+      background: rgba(212,175,55,0.1); padding: 0.18rem 0.6rem;
+      border-radius: var(--r-full);
+    }
+    input[type=range] {
+      width: 100%; -webkit-appearance: none; height: 4px;
+      background: var(--slate-lt); border-radius: 2px; outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 18px; height: 18px;
+      border-radius: 50%; background: var(--gold);
+      border: 2px solid var(--white);
+      box-shadow: 0 2px 8px rgba(212,175,55,0.4);
+      cursor: pointer;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 60%,var(--gold) 100%);
+      color: var(--navy); font-weight: 800; font-size: 0.9rem;
+      padding: 0.85rem 2rem; border-radius: var(--r-full);
+      box-shadow: 0 4px 20px rgba(212,175,55,0.3);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(212,175,55,0.45);
+    }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; color: var(--slate); font-weight: 600;
+      font-size: 0.88rem; padding: 0.8rem 1.5rem;
+      border: 1.5px solid var(--slate-lt); border-radius: var(--r-full);
+      transition: all var(--transition);
+    }
+    .btn-secondary:hover { border-color: var(--navy); color: var(--navy); }
+    .btn-row {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem; margin-top: 2rem;
+    }
+
+    /* ========================= CERTIFICATE ========================= */
+    #certificate-section { display: none; background: var(--pearl); padding: 5rem 1.5rem; }
+    #certificate-section.show { display: block; }
+
+    .cert-wrapper {
+      max-width: 780px; margin: 0 auto;
+      position: relative;
+    }
+    .cert-outer {
+      border: 3px solid var(--navy);
+      border-radius: var(--r-3xl);
+      padding: 6px;
+      box-shadow: var(--shadow-xl), 0 0 0 1px rgba(212,175,55,0.3);
+    }
+    .cert-inner {
+      border: 2px solid var(--gold);
+      border-radius: calc(var(--r-3xl) - 4px);
+      background: var(--white);
+      padding: 2.5rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    /* Watermark */
+    .cert-inner::before {
+      content: 'RISKCERDAS';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%) rotate(-30deg);
+      font-size: clamp(3rem,10vw,5.5rem);
+      font-weight: 900; letter-spacing: 0.15em;
+      color: rgba(212,175,55,0.04);
+      pointer-events: none; white-space: nowrap;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .cert-header { text-align: center; margin-bottom: 1.75rem; }
+    .cert-header-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      border: 1.5px solid var(--gold); border-radius: var(--r-full);
+      padding: 0.3rem 1rem; margin-bottom: 1rem;
+      font-size: 0.68rem; font-weight: 700; color: var(--gold);
+      letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    .cert-title-main {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      font-weight: 700; color: var(--navy); line-height: 1.3;
+    }
+    .cert-title-sub {
+      font-size: 0.78rem; color: var(--slate); margin-top: 0.35rem;
+    }
+    .cert-divider-gold {
+      height: 2px;
+      background: linear-gradient(90deg,transparent,var(--gold),transparent);
+      border: none; margin: 1.25rem 0;
+    }
+    .cert-id-row {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;
+    }
+    .cert-id-block { }
+    .cert-id-label { font-size: 0.65rem; color: var(--slate); letter-spacing: 0.1em; text-transform: uppercase; }
+    .cert-id-value { font-size: 0.82rem; font-weight: 700; color: var(--navy); font-family: monospace; }
+    .cert-date-value { font-size: 0.82rem; font-weight: 600; color: var(--navy); }
+
+    /* Zone badge */
+    .zone-badge {
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 0.4rem; text-align: center;
+      padding: 1.5rem; border-radius: var(--r-2xl);
+      margin-bottom: 1.75rem;
+      position: relative; overflow: hidden;
+    }
+    .zone-badge.red { background: rgba(220,38,38,0.06); border: 2px solid rgba(220,38,38,0.25); }
+    .zone-badge.yellow { background: rgba(217,119,6,0.06); border: 2px solid rgba(217,119,6,0.25); }
+    .zone-badge.green { background: rgba(22,163,74,0.06); border: 2px solid rgba(22,163,74,0.25); }
+    .zone-indicator {
+      width: 14px; height: 14px; border-radius: 50%;
+      display: inline-block; margin-right: 6px;
+      animation: pulse-zone 2s ease-in-out infinite;
+    }
+    @keyframes pulse-zone {
+      0%,100% { box-shadow: 0 0 0 0 currentColor; }
+      50% { box-shadow: 0 0 0 5px transparent; }
+    }
+    .zone-label-row {
+      display: flex; align-items: center; font-size: 0.78rem;
+      font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .zone-badge.red .zone-label-row { color: var(--red); }
+    .zone-badge.red .zone-indicator { background: var(--red); }
+    .zone-badge.yellow .zone-label-row { color: var(--yellow); }
+    .zone-badge.yellow .zone-indicator { background: var(--yellow); }
+    .zone-badge.green .zone-label-row { color: var(--green); }
+    .zone-badge.green .zone-indicator { background: var(--green); }
+    .zone-predikat {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.3rem, 3.5vw, 1.9rem);
+      font-weight: 700; color: var(--navy);
+    }
+    .zone-desc { font-size: 0.8rem; color: var(--slate); max-width: 400px; }
+
+    /* Stats grid */
+    .cert-stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+      gap: 1rem; margin-bottom: 1.75rem;
+    }
+    .cert-stat-card {
+      background: var(--pearl); border: 1px solid var(--slate-lt);
+      border-radius: var(--r-xl); padding: 1.1rem 1rem;
+    }
+    .cert-stat-label { font-size: 0.68rem; color: var(--slate); margin-bottom: 0.35rem; font-weight: 500; }
+    .cert-stat-value { font-size: 1.05rem; font-weight: 800; color: var(--navy); }
+    .cert-stat-value.gold { color: var(--gold-dk); }
+    .cert-stat-value.red { color: var(--red); }
+    .cert-stat-value.green { color: var(--green); }
+
+    /* Loss aversion block */
+    .loss-aversion {
+      background: linear-gradient(135deg, rgba(220,38,38,0.06) 0%, rgba(220,38,38,0.02) 100%);
+      border: 1.5px solid rgba(220,38,38,0.2); border-radius: var(--r-xl);
+      padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+    }
+    .loss-aversion.yellow {
+      background: linear-gradient(135deg,rgba(217,119,6,0.07) 0%,rgba(217,119,6,0.02) 100%);
+      border-color: rgba(217,119,6,0.25);
+    }
+    .loss-aversion-title {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .loss-aversion.red .loss-aversion-title { color: var(--red); }
+    .loss-aversion.yellow .loss-aversion-title { color: var(--yellow); }
+    .loss-aversion-text { font-size: 0.88rem; color: var(--navy); line-height: 1.6; font-weight: 500; }
+    .loss-aversion-sub { font-size: 0.78rem; color: var(--slate); margin-top: 0.4rem; }
+
+    /* CTA asuransi */
+    .cta-asuransi {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      border-radius: var(--r-2xl); padding: 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+    .cta-asuransi-left { flex: 1; min-width: 200px; }
+    .cta-asuransi-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.5); text-transform: uppercase; margin-bottom: 0.3rem;
+    }
+    .cta-asuransi-text { font-size: 0.92rem; font-weight: 700; color: var(--white); line-height: 1.4; }
+    .cta-asuransi-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 60%,var(--gold) 100%);
+      color: var(--navy); font-weight: 800; font-size: 0.82rem;
+      padding: 0.75rem 1.5rem; border-radius: var(--r-full);
+      text-decoration: none; white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(212,175,55,0.35);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .cta-asuransi-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(212,175,55,0.5); }
+
+    /* Expansion cards (zone green) */
+    .expansion-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr));
+      gap: 1rem; margin-bottom: 1.75rem;
+    }
+    .expansion-card {
+      background: var(--white); border: 1.5px solid var(--slate-lt);
+      border-radius: var(--r-2xl); padding: 1.4rem 1.2rem;
+      transition: all var(--transition); cursor: default;
+    }
+    .expansion-card:hover {
+      border-color: var(--gold); transform: scale(1.03);
+      box-shadow: var(--shadow-gold);
+    }
+    .expansion-step {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg,var(--gold),var(--gold-lt));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.82rem; font-weight: 900; color: var(--navy);
+      margin-bottom: 0.75rem;
+    }
+    .expansion-card-title { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 0.4rem; }
+    .expansion-card-desc { font-size: 0.78rem; color: var(--slate); line-height: 1.5; }
+
+    /* Signature row */
+    .cert-signature {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      flex-wrap: wrap; gap: 1.5rem; margin-top: 1.75rem;
+      padding-top: 1.25rem; border-top: 1px solid var(--slate-lt);
+    }
+    .sig-block { }
+    .sig-digital {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; font-style: italic; color: var(--navy-mid);
+      border-bottom: 1.5px solid var(--navy);
+      padding-bottom: 0.1rem; display: inline-block;
+      margin-bottom: 0.25rem;
+    }
+    .sig-label { font-size: 0.65rem; color: var(--slate); letter-spacing: 0.06em; }
+    .sig-stamp {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 3px solid var(--gold); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 0.5rem;
+    }
+    .sig-stamp-text { font-size: 0.38rem; font-weight: 800; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.4; }
+    .sig-stamp-year { font-size: 0.6rem; font-weight: 900; color: var(--navy); margin-top: 2px; }
+
+    /* Disclaimer */
+    .cert-disclaimer {
+      text-align: center; font-size: 0.65rem; color: var(--slate);
+      line-height: 1.6; margin-top: 1.25rem;
+      padding-top: 1rem; border-top: 1px solid rgba(11,19,43,0.06);
+    }
+
+    /* ========================= EDU SECTION ========================= */
+    .edu-section { background: var(--navy); padding: 5rem 1.5rem; }
+    .edu-section .section-title { color: var(--white); }
+    .edu-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+      gap: 1.25rem; margin-top: 2.5rem;
+    }
+    .edu-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.15);
+      border-radius: var(--r-2xl); padding: 1.75rem 1.5rem;
+      transition: all var(--transition);
+    }
+    .edu-card:hover {
+      background: rgba(212,175,55,0.07);
+      border-color: rgba(212,175,55,0.4);
+      transform: translateY(-4px);
+    }
+    .edu-card-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .edu-card-title { font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+    .edu-card-desc { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+    /* ========================= FOOTER ========================= */
+    .footer {
+      background: #050c1a; padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    .footer-brand {
+      font-size: 0.8rem; font-weight: 700; color: var(--gold);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+    .footer-legal { font-size: 0.68rem; color: rgba(255,255,255,0.25); line-height: 1.6; }
+
+    /* ========================= ANIMATIONS ========================= */
+    .fade-up {
+      opacity: 0; transform: translateY(24px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+    @keyframes fadeUp {
+      to { opacity:1; transform:translateY(0); }
+    }
+    .fade-in { opacity: 0; animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn { to { opacity:1; } }
+
+    /* ========================= RESPONSIVE ========================= */
+    @media (max-width: 680px) {
+      .wizard-card { padding: 1.75rem 1.25rem; }
+      .cert-inner { padding: 1.75rem 1.25rem; }
+      .cert-signature { justify-content: center; }
+      .cta-asuransi { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ========================= UTILITY ========================= */
+    .hidden { display: none !important; }
+    .text-center { text-align: center; }
+    .mt-1 { margin-top: 0.5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .mt-3 { margin-top: 1.5rem; }
+
+    /* Reset button */
+    .btn-reset {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: transparent; color: var(--slate);
+      font-size: 0.8rem; font-weight: 600; margin-top: 2rem;
+      padding: 0.6rem 1.25rem; border: 1.5px solid var(--slate-lt);
+      border-radius: var(--r-full); transition: all var(--transition);
+    }
+    .btn-reset:hover { border-color: var(--gold); color: var(--navy); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
+<nav class="navbar" role="banner">
+  <a class="nav-logo" href="#">
+    <div class="logo-capsule">
+      <span class="logo-main">Hitung Risiko</span>
+      <span class="logo-tagline">Mengukur Risiko Masa Depan dengan Presisi Aktuaria</span>
+    </div>
+  </a>
+  <span class="nav-badge">riskcerdas.id</span>
+</nav>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-eyebrow">Platform Literasi Keuangan UMKM</div>
+  <h1 class="hero-title">
+    Audit Risiko Bisnis Anda<br />
+    <span>Berbasis Ilmu Aktuaria</span>
+  </h1>
+  <p class="hero-subtitle">
+    Kalkulasi risiko operasional UMKM secara ilmiah—menghasilkan rapor bersertifikat resmi dan strategi proteksi yang terukur dalam 3 menit.
+  </p>
+  <a href="#wizard-section" class="hero-cta" onclick="document.getElementById('wizard-section').scrollIntoView({behavior:'smooth'}); return false;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    Mulai Audit Gratis
+  </a>
+  <div class="hero-stats">
+    <div class="hero-stat-item">
+      <div class="hero-stat-num">3.000+</div>
+      <div class="hero-stat-label">UMKM Teraudit</div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-num">98%</div>
+      <div class="hero-stat-label">Akurasi Kalkulasi</div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-num">3 Mnt</div>
+      <div class="hero-stat-label">Waktu Pengisian</div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-num">Gratis</div>
+      <div class="hero-stat-label">Tanpa Biaya</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ WIZARD SECTION ═══════════════════════ -->
+<section class="section" id="wizard-section">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-eyebrow">Proses Audit 3 Tahap</span>
+      <h2 class="section-title">Isi Formulir Risiko Usaha Anda</h2>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="wizard-progress">
+      <div class="wp-step active" id="prog-1">
+        <div class="wp-dot">1</div>
+        <div class="wp-label">Jenis Usaha</div>
+      </div>
+      <div class="wp-step" id="prog-2">
+        <div class="wp-dot">2</div>
+        <div class="wp-label">Audit Risiko</div>
+      </div>
+      <div class="wp-step" id="prog-3">
+        <div class="wp-dot">3</div>
+        <div class="wp-label">Finansial</div>
+      </div>
+    </div>
+
+    <!-- Wizard Card -->
+    <div class="wizard-card" id="wizard-card">
+
+      <!-- ─── STAGE 1: Pilih Sektor ─── -->
+      <div class="wizard-stage active" id="stage-1">
+        <h3 class="stage-title">Pilih Sektor Usaha Anda</h3>
+        <p class="stage-desc">Pilih kategori yang paling mendekati jenis bisnis Anda. Kuesioner berikutnya akan disesuaikan secara otomatis.</p>
+        <div class="sector-grid">
+          <div class="sector-card" onclick="selectSector(this,'kuliner')">
+            <span class="sector-icon">🍽️</span>
+            <div class="sector-name">Kuliner / F&B</div>
+            <div class="sector-sub">Warung, kafe, katering, cloud kitchen</div>
+          </div>
+          <div class="sector-card" onclick="selectSector(this,'dagang')">
+            <span class="sector-icon">🏪</span>
+            <div class="sector-name">Dagang / Ritel Fisik</div>
+            <div class="sector-sub">Toko kelontong, fashion, elektronik</div>
+          </div>
+          <div class="sector-card" onclick="selectSector(this,'jasa')">
+            <span class="sector-icon">💡</span>
+            <div class="sector-name">Jasa Kreatif / Digital</div>
+            <div class="sector-sub">Desain grafis, konten, konsultan IT</div>
+          </div>
+        </div>
+        <div id="stage-1-error" class="hidden" style="color:var(--red);font-size:0.8rem;margin-bottom:0.75rem;">Silakan pilih sektor usaha terlebih dahulu.</div>
+        <div class="btn-row" style="justify-content:flex-end;">
+          <button class="btn-primary" onclick="goToStage2()">
+            Lanjut
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── STAGE 2: Audit Risiko ─── -->
+      <div class="wizard-stage" id="stage-2">
+        <h3 class="stage-title">Audit Risiko Operasional</h3>
+        <p class="stage-desc" id="stage-2-desc">Jawab pertanyaan berikut dengan jujur dan akurat untuk memperoleh skor risiko yang presisi.</p>
+
+        <!-- Konten dinamis masuk sini -->
+        <div id="audit-form-container"></div>
+
+        <hr class="form-divider" />
+        <p class="form-section-title">Risiko Lingkungan Eksternal</p>
+
+        <div class="form-row">
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label" for="risk-banjir">Risiko Banjir Area</label>
+              <span class="slider-val" id="val-banjir">3</span>
+            </div>
+            <input type="range" id="risk-banjir" min="1" max="10" value="3" oninput="document.getElementById('val-banjir').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Rendah</span><span>Sangat Tinggi</span></div>
+          </div>
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label" for="risk-kriminalitas">Tingkat Kriminalitas</label>
+              <span class="slider-val" id="val-kriminalitas">3</span>
+            </div>
+            <input type="range" id="risk-kriminalitas" min="1" max="10" value="3" oninput="document.getElementById('val-kriminalitas').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Rendah</span><span>Sangat Tinggi</span></div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="goToStage(1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Kembali
+          </button>
+          <button class="btn-primary" onclick="goToStage3()">
+            Lanjut
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── STAGE 3: Finansial ─── -->
+      <div class="wizard-stage" id="stage-3">
+        <h3 class="stage-title">Parameter Finansial Usaha</h3>
+        <p class="stage-desc">Data ini digunakan untuk menghitung Expected Loss aktual dalam nilai Rupiah dan rasio eksposur terhadap omset Anda.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="omset">Omset Bulanan (Rp) <span>*</span></label>
+            <input type="text" id="omset" class="form-input" placeholder="Contoh: 15.000.000" oninput="formatRupiah(this)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="aset">Total Nilai Aset Usaha (Rp) <span>*</span></label>
+            <input type="text" id="aset" class="form-input" placeholder="Contoh: 50.000.000" oninput="formatRupiah(this)" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="nama-usaha">Nama Usaha</label>
+          <input type="text" id="nama-usaha" class="form-input" placeholder="Masukkan nama usaha Anda" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="nama-pemilik">Nama Pemilik / Penanggung Jawab</label>
+          <input type="text" id="nama-pemilik" class="form-input" placeholder="Masukkan nama lengkap Anda" />
+        </div>
+
+        <div id="stage-3-error" class="hidden" style="color:var(--red);font-size:0.8rem;margin-bottom:0.75rem;">Mohon isi Omset dan Nilai Aset dengan benar.</div>
+
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="goToStage(2)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Kembali
+          </button>
+          <button class="btn-primary" onclick="generateCertificate()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Generate Rapor Aktuaria
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /wizard-card -->
+  </div>
+</section>
+
+<!-- ═══════════════════════ CERTIFICATE ═══════════════════════ -->
+<section id="certificate-section">
+  <div class="cert-wrapper">
+
+    <!-- Cert outer double border -->
+    <div class="cert-outer">
+      <div class="cert-inner">
+
+        <!-- Header -->
+        <div class="cert-header">
+          <div class="cert-header-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Dokumen Resmi Analisis Risiko Aktuaria
+          </div>
+          <h2 class="cert-title-main">LAPORAN PENILAIAN RISIKO USAHA MIKRO, KECIL &amp; MENENGAH</h2>
+          <p class="cert-title-sub">Diterbitkan oleh Platform RiskCerdas.id — Sistem Audit Risiko Berbasis Metodologi Aktuaria</p>
+        </div>
+
+        <hr class="cert-divider-gold" />
+
+        <!-- ID Row -->
+        <div class="cert-id-row">
+          <div class="cert-id-block">
+            <div class="cert-id-label">No. Dokumen Sertifikat</div>
+            <div class="cert-id-value" id="cert-id">CERT/RISK/2026/—</div>
+          </div>
+          <div class="cert-id-block">
+            <div class="cert-id-label">Nama Usaha</div>
+            <div class="cert-id-value" id="cert-nama-usaha">—</div>
+          </div>
+          <div class="cert-id-block" style="text-align:right;">
+            <div class="cert-id-label">Tanggal Terbit</div>
+            <div class="cert-date-value" id="cert-date">—</div>
+          </div>
+        </div>
+
+        <!-- Pembuka formal -->
+        <div style="background:var(--pearl);border-radius:var(--r-xl);padding:1rem 1.25rem;margin-bottom:1.5rem;border-left:3px solid var(--gold);">
+          <p style="font-size:0.82rem;color:var(--slate);line-height:1.7;" id="cert-opening">
+            Berdasarkan data yang disampaikan oleh pemilik usaha dan analisis komputasional menggunakan metodologi Pure Premium Aktuaria, dengan ini platform RiskCerdas.id menyatakan bahwa usaha yang bersangkutan telah melewati proses penilaian risiko komprehensif meliputi dimensi operasional, lingkungan, dan finansial.
+          </p>
+        </div>
+
+        <!-- Zone Badge -->
+        <div class="zone-badge" id="cert-zone-badge">
+          <div class="zone-label-row">
+            <span class="zone-indicator"></span>
+            <span id="cert-zone-label">—</span>
+          </div>
+          <div class="cert-title-main zone-predikat" id="cert-predikat">—</div>
+          <div class="zone-desc" id="cert-zone-desc">—</div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="cert-stats-grid">
+          <div class="cert-stat-card">
+            <div class="cert-stat-label">Probabilitas Risiko Internal (P_internal)</div>
+            <div class="cert-stat-value" id="cert-p-internal">—</div>
+          </div>
+          <div class="cert-stat-card">
+            <div class="cert-stat-label">Probabilitas Risiko Eksternal (P_eksternal)</div>
+            <div class="cert-stat-value" id="cert-p-external">—</div>
+          </div>
+          <div class="cert-stat-card">
+            <div class="cert-stat-label">Probabilitas Komposit P(Total)</div>
+            <div class="cert-stat-value gold" id="cert-p-total">—</div>
+          </div>
+          <div class="cert-stat-card">
+            <div class="cert-stat-label">Expected Loss / Pure Premium (Bulanan)</div>
+            <div class="cert-stat-value red" id="cert-expected-loss">—</div>
+          </div>
+          <div class="cert-stat-card">
+            <div class="cert-stat-label">Total Nilai Aset Usaha</div>
+            <div class="cert-stat-value" id="cert-aset">—</div>
+          </div>
+          <div class="cert-stat-card">
+            <div class="cert-stat-label">Rasio Eksposur Terhadap Omset</div>
+            <div class="cert-stat-value" id="cert-rasio">—</div>
+          </div>
+        </div>
+
+        <!-- Loss Aversion / Expansion Module -->
+        <div id="cert-action-block"></div>
+
+        <!-- CTA Asuransi -->
+        <div class="cta-asuransi" id="cert-cta-block" style="display:none;">
+          <div class="cta-asuransi-left">
+            <div class="cta-asuransi-label">Rekomendasi Proteksi</div>
+            <div class="cta-asuransi-text" id="cert-cta-text">Lindungi bisnis Anda dengan asuransi mikro terpercaya.</div>
+          </div>
+          <a href="https://asuransiastra.com" target="_blank" rel="noopener noreferrer" class="cta-asuransi-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Asuransi Astra Mikro
+          </a>
+        </div>
+
+        <!-- Signature -->
+        <div class="cert-signature">
+          <div class="sig-block">
+            <div class="sig-digital" id="cert-sig-name">RiskCerdas System</div>
+            <div class="sig-label">Tanda Tangan Digital — Pemilik Usaha</div>
+            <div class="sig-label" style="margin-top:3px;" id="cert-nama-pemilik-sig">—</div>
+          </div>
+          <div class="sig-block" style="display:flex;gap:1.25rem;align-items:flex-end;">
+            <div>
+              <div class="sig-digital">RiskCerdas System</div>
+              <div class="sig-label">Diverifikasi Otomatis</div>
+              <div class="sig-label" style="font-family:monospace;font-size:0.6rem;" id="cert-hash">SHA-256: —</div>
+            </div>
+            <div class="sig-stamp">
+              <div class="sig-stamp-text">PLATFORM<br/>RISKCERDAS<br/>INDONESIA</div>
+              <div class="sig-stamp-year" id="cert-stamp-year">2026</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="cert-disclaimer">
+          Dokumen ini diterbitkan secara otomatis oleh sistem komputasi RiskCerdas.id berdasarkan input pengguna. Dokumen ini bukan merupakan produk jasa keuangan resmi yang diregulasi OJK dan tidak menggantikan saran profesional aktuaris berlisensi. Hasil kalkulasi bersifat indikatif dan edukatif.
+        </div>
+
+      </div><!-- /cert-inner -->
+    </div><!-- /cert-outer -->
+
+    <div class="text-center">
+      <button class="btn-reset" onclick="resetWizard()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        Ulangi Audit
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════ EDU SECTION ═══════════════════════ -->
+<section class="edu-section">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-eyebrow" style="color:var(--gold);">Mengapa Ini Penting</span>
+      <h2 class="section-title">Apa yang Dipelajari dari Audit Ini?</h2>
+    </div>
+    <div class="edu-grid">
+      <div class="edu-card">
+        <div class="edu-card-icon">📊</div>
+        <div class="edu-card-title">Pure Premium Actuarial</div>
+        <div class="edu-card-desc">Metode kalkulasi yang sama digunakan perusahaan asuransi besar untuk menentukan harga premi — kini tersedia untuk UMKM.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">🔗</div>
+        <div class="edu-card-title">Probabilitas Komposit</div>
+        <div class="edu-card-desc">Rumus P(Total) = 1 − [(1−P_internal) × (1−P_eksternal)] memastikan tidak ada dimensi risiko yang terlewat.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">💸</div>
+        <div class="edu-card-title">Loss Aversion Framework</div>
+        <div class="edu-card-desc">Mengubah angka abstrak menjadi kerugian Rupiah nyata—agar dampak risiko terasa dan mendorong tindakan nyata.</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-icon">🛡️</div>
+        <div class="edu-card-title">Transfer Risiko Mikro</div>
+        <div class="edu-card-desc">Temukan produk asuransi mikro yang sesuai untuk mentransfer risiko finansial kepada pihak ketiga yang kompeten.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="footer">
+  <div class="footer-brand">RiskCerdas.id</div>
+  <div class="footer-legal">
+    &copy; 2026 RiskCerdas.id — Platform Literasi Keuangan UMKM Indonesia<br />
+    Seluruh kalkulasi bersifat edukatif. Bukan produk jasa keuangan resmi.
+  </div>
+</footer>
+
+<!-- ═══════════════════════ JAVASCRIPT ═══════════════════════ -->
+<script>
+  /* ─────── STATE ─────── */
+  let selectedSector = null;
+
+  /* ─────── SECTOR SELECT ─────── */
+  function selectSector(el, sector) {
+    document.querySelectorAll('.sector-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedSector = sector;
+    document.getElementById('stage-1-error').classList.add('hidden');
+  }
+
+  /* ─────── STAGE NAVIGATION ─────── */
+  function goToStage(n) {
+    // hide all
+    document.querySelectorAll('.wizard-stage').forEach(s => s.classList.remove('active'));
+    document.getElementById('stage-' + n).classList.add('active');
+    // update progress
+    for (let i = 1; i <= 3; i++) {
+      const prog = document.getElementById('prog-' + i);
+      prog.classList.remove('active', 'done');
+      if (i < n) prog.classList.add('done');
+      else if (i === n) prog.classList.add('active');
+    }
+    // scroll to wizard
+    document.getElementById('wizard-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function goToStage2() {
+    if (!selectedSector) {
+      document.getElementById('stage-1-error').classList.remove('hidden');
+      return;
+    }
+    renderAuditForm(selectedSector);
+    goToStage(2);
+  }
+
+  function goToStage3() {
+    goToStage(3);
+  }
+
+  /* ─────── AUDIT FORM RENDERER ─────── */
+  function renderAuditForm(sector) {
+    const container = document.getElementById('audit-form-container');
+    let html = '';
+
+    if (sector === 'kuliner') {
+      document.getElementById('stage-2-desc').textContent = 'Audit ini mengevaluasi risiko peralatan masak, instalasi gas, dan higienitas produksi dapur Anda.';
+      html = `
+        <p class="form-section-title">Audit Dapur & Instalasi Kuliner</p>
+        <div class="form-row">
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Kondisi Kompor & Instalasi Gas</label>
+              <span class="slider-val" id="val-q1">5</span>
+            </div>
+            <input type="range" id="q1" min="1" max="10" value="5" oninput="document.getElementById('val-q1').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Baik</span><span>Sangat Buruk</span></div>
+          </div>
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Usia Tabung/Regulator Gas</label>
+              <span class="slider-val" id="val-q2">3</span>
+            </div>
+            <input type="range" id="q2" min="1" max="10" value="3" oninput="document.getElementById('val-q2').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Baru (&lt;1 th)</span><span>Tua (&gt;5 th)</span></div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Standar Higienitas Dapur</label>
+              <span class="slider-val" id="val-q3">4</span>
+            </div>
+            <input type="range" id="q3" min="1" max="10" value="4" oninput="document.getElementById('val-q3').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Baik</span><span>Sangat Buruk</span></div>
+          </div>
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Risiko Kontaminasi Bahan Baku</label>
+              <span class="slider-val" id="val-q4">3</span>
+            </div>
+            <input type="range" id="q4" min="1" max="10" value="3" oninput="document.getElementById('val-q4').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Rendah</span><span>Sangat Tinggi</span></div>
+          </div>
+        </div>
+      `;
+    } else if (sector === 'dagang') {
+      document.getElementById('stage-2-desc').textContent = 'Audit ini mengevaluasi keamanan gudang, manajemen stok, dan proteksi aset fisik toko Anda.';
+      html = `
+        <p class="form-section-title">Audit Gudang & Keamanan Stok</p>
+        <div class="form-row">
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Kondisi Keamanan Gudang/Toko</label>
+              <span class="slider-val" id="val-q1">5</span>
+            </div>
+            <input type="range" id="q1" min="1" max="10" value="5" oninput="document.getElementById('val-q1').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Aman</span><span>Sangat Rawan</span></div>
+          </div>
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Risiko Kerusakan Stok</label>
+              <span class="slider-val" id="val-q2">3</span>
+            </div>
+            <input type="range" id="q2" min="1" max="10" value="3" oninput="document.getElementById('val-q2').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Rendah</span><span>Sangat Tinggi</span></div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Kelayakan Instalasi Listrik</label>
+              <span class="slider-val" id="val-q3">4</span>
+            </div>
+            <input type="range" id="q3" min="1" max="10" value="4" oninput="document.getElementById('val-q3').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Baik</span><span>Sangat Buruk</span></div>
+          </div>
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Risiko Pencurian Stok</label>
+              <span class="slider-val" id="val-q4">3</span>
+            </div>
+            <input type="range" id="q4" min="1" max="10" value="3" oninput="document.getElementById('val-q4').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Rendah</span><span>Sangat Tinggi</span></div>
+          </div>
+        </div>
+      `;
+    } else {
+      document.getElementById('stage-2-desc').textContent = 'Audit ini mengevaluasi keamanan perangkat kerja, data digital, dan manajemen proyek layanan Anda.';
+      html = `
+        <p class="form-section-title">Audit Aset Digital & Perangkat Kerja</p>
+        <div class="form-row">
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Keamanan Data Klien & Server</label>
+              <span class="slider-val" id="val-q1">5</span>
+            </div>
+            <input type="range" id="q1" min="1" max="10" value="5" oninput="document.getElementById('val-q1').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Aman</span><span>Sangat Rawan</span></div>
+          </div>
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Usia & Kondisi Gadget Kerja</label>
+              <span class="slider-val" id="val-q2">3</span>
+            </div>
+            <input type="range" id="q2" min="1" max="10" value="3" oninput="document.getElementById('val-q2').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Baru & Prima</span><span>Tua & Sering Rusak</span></div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Risiko Gagal Proyek / Wanprestasi</label>
+              <span class="slider-val" id="val-q3">4</span>
+            </div>
+            <input type="range" id="q3" min="1" max="10" value="4" oninput="document.getElementById('val-q3').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Rendah</span><span>Sangat Tinggi</span></div>
+          </div>
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Manajemen Backup & Recovery Data</label>
+              <span class="slider-val" id="val-q4">3</span>
+            </div>
+            <input type="range" id="q4" min="1" max="10" value="3" oninput="document.getElementById('val-q4').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Baik</span><span>Tidak Ada Backup</span></div>
+          </div>
+        </div>
+      `;
+    }
+
+    container.innerHTML = html;
+  }
+
+  /* ─────── FORMAT RUPIAH ─────── */
+  function formatRupiah(el) {
+    let v = el.value.replace(/\D/g, '');
+    el.value = v.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  function parseRupiah(str) {
+    return parseInt(str.replace(/\./g, '')) || 0;
+  }
+
+  function toRupiahStr(num) {
+    return 'Rp ' + Math.round(num).toLocaleString('id-ID');
+  }
+
+  /* ─────── CERTIFICATE GENERATOR ─────── */
+  function generateCertificate() {
+    const omsetRaw = document.getElementById('omset').value;
+    const asetRaw  = document.getElementById('aset').value;
+    const errEl    = document.getElementById('stage-3-error');
+
+    if (!omsetRaw || !asetRaw || parseRupiah(omsetRaw) === 0 || parseRupiah(asetRaw) === 0) {
+      errEl.classList.remove('hidden');
+      return;
+    }
+    errEl.classList.add('hidden');
+
+    // ── Get slider values ──
+    const q1  = parseFloat(document.getElementById('q1').value);
+    const q2  = parseFloat(document.getElementById('q2').value);
+    const q3  = parseFloat(document.getElementById('q3').value);
+    const q4  = parseFloat(document.getElementById('q4').value);
+    const banjir      = parseFloat(document.getElementById('risk-banjir').value);
+    const kriminalitas = parseFloat(document.getElementById('risk-kriminalitas').value);
+
+    // ── Probabilitas Internal ──
+    // Normalize 1-10 → 0.01 - 0.30 per faktor
+    const pI1 = (q1 / 10) * 0.25;
+    const pI2 = (q2 / 10) * 0.20;
+    const pI3 = (q3 / 10) * 0.20;
+    const pI4 = (q4 / 10) * 0.25;
+
+    // Composite internal: 1 - product(1-pIx)
+    const pInternal = 1 - ((1 - pI1) * (1 - pI2) * (1 - pI3) * (1 - pI4));
+
+    // ── Probabilitas Eksternal ──
+    const pE1 = (banjir / 10) * 0.25;
+    const pE2 = (kriminalitas / 10) * 0.25;
+    const pExternal = 1 - ((1 - pE1) * (1 - pE2));
+
+    // ── Probabilitas Komposit ──
+    const pTotal = 1 - ((1 - pInternal) * (1 - pExternal));
+
+    // ── Financial Metrics ──
+    const omset       = parseRupiah(omsetRaw);
+    const aset        = parseRupiah(asetRaw);
+    const expectedLoss = pTotal * aset;
+    const rasioEksposur = (expectedLoss / omset) * 100;
+
+    // ── Zone ──
+    let zone, zoneLabel, predikat, zoneDesc;
+    if (pTotal >= 0.15) {
+      zone = 'red';
+      zoneLabel = 'Zona Merah — Tingkat Kritis';
+      predikat = 'Risiko Kritis: Intervensi Segera Diperlukan';
+      zoneDesc = 'Profil risiko usaha Anda berada pada level berbahaya. Potensi kerugian finansial signifikan dalam 12 bulan ke depan.';
+    } else if (pTotal >= 0.06) {
+      zone = 'yellow';
+      zoneLabel = 'Zona Kuning — Tingkat Waspada';
+      predikat = 'Perlu Perhatian: Optimalkan Mitigasi Risiko';
+      zoneDesc = 'Risiko usaha Anda berada di level menengah. Langkah mitigasi proaktif sangat direkomendasikan segera.';
+    } else {
+      zone = 'green';
+      zoneLabel = 'Zona Hijau — Tingkat Stabil';
+      predikat = 'Predikat: Sangat Stabil & Akurat';
+      zoneDesc = 'Selamat! Profil risiko usaha Anda menunjukkan kondisi sangat baik dan terkendali secara aktuaria.';
+    }
+
+    // ── Cert ID ──
+    const certNum = 'CERT/RISK/2026/' + String(Math.floor(10000 + Math.random() * 90000));
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    // ── Names ──
+    const namaUsaha   = document.getElementById('nama-usaha').value || 'Usaha Anda';
+    const namaPemilik = document.getElementById('nama-pemilik').value || 'Pemilik Usaha';
+
+    // ── Hash (simulated) ──
+    const hashVal = Array.from({length: 12}, () => Math.floor(Math.random()*16).toString(16)).join('') + '...';
+
+    // ── Populate Certificate ──
+    document.getElementById('cert-id').textContent          = certNum;
+    document.getElementById('cert-date').textContent        = dateStr;
+    document.getElementById('cert-nama-usaha').textContent  = namaUsaha;
+    document.getElementById('cert-stamp-year').textContent  = now.getFullYear();
+    document.getElementById('cert-sig-name').textContent    = namaPemilik;
+    document.getElementById('cert-nama-pemilik-sig').textContent = namaPemilik;
+    document.getElementById('cert-hash').textContent        = 'SHA-256: ' + hashVal;
+
+    document.getElementById('cert-p-internal').textContent  = (pInternal * 100).toFixed(2) + '%';
+    document.getElementById('cert-p-external').textContent  = (pExternal * 100).toFixed(2) + '%';
+    document.getElementById('cert-p-total').textContent     = (pTotal * 100).toFixed(2) + '%';
+    document.getElementById('cert-expected-loss').textContent = toRupiahStr(expectedLoss) + ' / bln';
+    document.getElementById('cert-aset').textContent        = toRupiahStr(aset);
+    document.getElementById('cert-rasio').textContent       = rasioEksposur.toFixed(2) + '%';
+
+    // Zone badge
+    const badge = document.getElementById('cert-zone-badge');
+    badge.className = 'zone-badge ' + zone;
+    document.getElementById('cert-zone-label').textContent = zoneLabel;
+    document.getElementById('cert-predikat').textContent   = predikat;
+    document.getElementById('cert-zone-desc').textContent  = zoneDesc;
+
+    // Sector label for CTA
+    const sectorLabels = {
+      kuliner: 'Usaha Kuliner & F&B',
+      dagang:  'Usaha Dagang & Ritel',
+      jasa:    'Usaha Jasa & Digital'
+    };
+    const sectorLabel = sectorLabels[selectedSector];
+
+    // ── Action Block ──
+    const actionBlock = document.getElementById('cert-action-block');
+
+    if (zone === 'green') {
+      // Expansion cards
+      actionBlock.innerHTML = `
+        <div style="background:rgba(22,163,74,0.05);border:1.5px solid rgba(22,163,74,0.2);border-radius:var(--r-xl);padding:1.2rem 1.5rem;margin-bottom:1.25rem;">
+          <p style="font-size:0.78rem;font-weight:700;color:var(--green);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Strategi Ekspansi Bisnis</p>
+          <p style="font-size:0.88rem;color:var(--navy);line-height:1.6;">Dengan kondisi risiko yang sangat stabil, kini saatnya mendorong pertumbuhan bisnis Anda ke level berikutnya. Berikut 3 langkah taktis yang direkomendasikan:</p>
+        </div>
+        <div class="expansion-grid">
+          <div class="expansion-card">
+            <div class="expansion-step">1</div>
+            <div class="expansion-card-title">Manajemen Laba Ditahan</div>
+            <div class="expansion-card-desc">Alokasikan minimum 20% laba bersih bulanan sebagai dana cadangan. Ini membangun bantalan finansial (buffer) sebelum ekspansi.</div>
+          </div>
+          <div class="expansion-card">
+            <div class="expansion-step">2</div>
+            <div class="expansion-card-title">Diversifikasi Produk Cerdas</div>
+            <div class="expansion-card-desc">Identifikasi 1-2 lini produk/layanan komplementer tanpa modal besar. Diversifikasi mengurangi konsentrasi risiko pendapatan.</div>
+          </div>
+          <div class="expansion-card">
+            <div class="expansion-step">3</div>
+            <div class="expansion-card-title">Proteksi Aset Terencana</div>
+            <div class="expansion-card-desc">Meski risiko rendah, lindungi aset bisnis yang sudah terbangun dengan polis asuransi mikro yang premi-nya sangat terjangkau.</div>
+          </div>
+        </div>
+      `;
+      document.getElementById('cert-cta-block').style.display = 'flex';
+      document.getElementById('cert-cta-text').textContent = `Pertahankan kondisi stabil ${sectorLabel} Anda dengan proteksi asuransi mikro terencana sejak dini.`;
+    } else {
+      // Loss aversion block
+      const lossPerPorsi  = Math.round(expectedLoss / 100); // simulasi nilai per unit usaha
+      const porsiEquiv    = Math.round(expectedLoss / (omset / 200));
+      let lossText = '';
+      if (selectedSector === 'kuliner') {
+        lossText = `Modal Anda tergerus halus sebesar <strong>${toRupiahStr(expectedLoss)}/bulan</strong>, setara dengan kehilangan <strong>${porsiEquiv} porsi dagangan</strong> Anda setiap bulannya — tanpa Anda sadari.`;
+      } else if (selectedSector === 'dagang') {
+        lossText = `Stok Anda berpotensi menyusut senilai <strong>${toRupiahStr(expectedLoss)}/bulan</strong> akibat risiko gudang dan lingkungan, setara <strong>${porsiEquiv} unit barang dagang</strong> yang hilang begitu saja.`;
+      } else {
+        lossText = `Pendapatan proyek Anda terancam bocor <strong>${toRupiahStr(expectedLoss)}/bulan</strong> akibat risiko data dan perangkat, setara dengan kehilangan <strong>${porsiEquiv} jam kerja tagihan klien</strong>.`;
+      }
+      const zoneClass = zone === 'red' ? 'red' : 'yellow';
+      const ctaText = zone === 'red'
+        ? `PERINGATAN KRITIS: ${sectorLabel} Anda memerlukan transfer risiko segera. Dapatkan perlindungan asuransi mikro dari Astra sebelum risiko materialisasi.`
+        : `REKOMENDASI WASPADA: Kurangi eksposur risiko ${sectorLabel} Anda dengan asuransi mikro yang premi-nya jauh lebih kecil dari potensi kerugian.`;
+
+      actionBlock.innerHTML = `
+        <div class="loss-aversion ${zoneClass}">
+          <div class="loss-aversion-title">${zone === 'red' ? '🔴 Peringatan: Kerugian Nyata yang Tersembunyi' : '🟡 Perhatian: Risiko Finansial Teridentifikasi'}</div>
+          <div class="loss-aversion-text">${lossText}</div>
+          <div class="loss-aversion-sub">Rasio eksposur ${rasioEksposur.toFixed(1)}% terhadap omset mengindikasikan ketidakseimbangan risiko-pendapatan yang perlu ditangani.</div>
+        </div>
+      `;
+      document.getElementById('cert-cta-block').style.display = 'flex';
+      document.getElementById('cert-cta-text').textContent = ctaText;
+    }
+
+    // ── Show Certificate ──
+    document.getElementById('wizard-section').style.display = 'none';
+    const certSection = document.getElementById('certificate-section');
+    certSection.classList.add('show');
+    certSection.classList.add('fade-up');
+    setTimeout(() => certSection.classList.remove('fade-up'), 600);
+    certSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ─────── RESET ─────── */
+  function resetWizard() {
+    selectedSector = null;
+    document.querySelectorAll('.sector-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('omset').value = '';
+    document.getElementById('aset').value = '';
+    document.getElementById('nama-usaha').value = '';
+    document.getElementById('nama-pemilik').value = '';
+    document.getElementById('certificate-section').classList.remove('show');
+    document.getElementById('wizard-section').style.display = '';
+    goToStage(1);
+    document.getElementById('wizard-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+
+</body>
+</html>
