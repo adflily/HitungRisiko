@@ -762,6 +762,11 @@
             <div class="sector-name">Jasa Kreatif / Digital</div>
             <div class="sector-sub">Desain grafis, konten, konsultan IT</div>
           </div>
+          <div class="sector-card" onclick="selectSector(this,'reparasi')">
+            <span class="sector-icon">🔧</span>
+            <div class="sector-name">Reparasi / Servis Elektronik</div>
+            <div class="sector-sub">Servis HP, elektronik, alat rumah tangga</div>
+          </div>
         </div>
         <div id="stage-1-error" class="hidden" style="color:var(--red);font-size:0.8rem;margin-bottom:0.75rem;">Silakan pilih sektor usaha terlebih dahulu.</div>
         <div class="btn-row" style="justify-content:flex-end;">
@@ -1097,13 +1102,13 @@
     let html = '';
 
     if (sector === 'kuliner') {
-      document.getElementById('stage-2-desc').textContent = 'Audit ini mengevaluasi risiko peralatan masak, instalasi gas, dan higienitas produksi dapur Anda.';
+      document.getElementById('stage-2-desc').textContent = 'Audit ini mengevaluasi risiko peralatan produksi, sumber energi memasak, dan higienitas usaha kuliner Anda — baik yang memiliki dapur sendiri, menyewa tempat usaha, maupun menggunakan dapur bersama/cloud kitchen.';
       html = `
-        <p class="form-section-title">Audit Dapur & Instalasi Kuliner</p>
+        <p class="form-section-title">Audit Peralatan & Tempat Produksi Kuliner</p>
         <div class="form-row">
           <div class="slider-group">
             <div class="slider-header">
-              <label class="form-label">Kondisi Kompor & Instalasi Gas</label>
+              <label class="form-label">Kondisi & Keamanan Peralatan Memasak (Gas/Listrik/Induksi)</label>
               <span class="slider-val" id="val-q1">5</span>
             </div>
             <input type="range" id="q1" min="1" max="10" value="5" oninput="document.getElementById('val-q1').textContent=this.value" />
@@ -1111,17 +1116,17 @@
           </div>
           <div class="slider-group">
             <div class="slider-header">
-              <label class="form-label">Usia Tabung/Regulator Gas</label>
+              <label class="form-label">Risiko Sumber Energi & Tempat Produksi (Tabung Gas/Listrik/Sewa)</label>
               <span class="slider-val" id="val-q2">3</span>
             </div>
             <input type="range" id="q2" min="1" max="10" value="3" oninput="document.getElementById('val-q2').textContent=this.value" />
-            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Baru (&lt;1 th)</span><span>Tua (&gt;5 th)</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Terkendali</span><span>Sangat Rawan</span></div>
           </div>
         </div>
         <div class="form-row">
           <div class="slider-group">
             <div class="slider-header">
-              <label class="form-label">Standar Higienitas Dapur</label>
+              <label class="form-label">Standar Higienitas Tempat Produksi</label>
               <span class="slider-val" id="val-q3">4</span>
             </div>
             <input type="range" id="q3" min="1" max="10" value="4" oninput="document.getElementById('val-q3').textContent=this.value" />
@@ -1138,13 +1143,13 @@
         </div>
       `;
     } else if (sector === 'dagang') {
-      document.getElementById('stage-2-desc').textContent = 'Audit ini mengevaluasi keamanan gudang, manajemen stok, dan proteksi aset fisik toko Anda.';
+      document.getElementById('stage-2-desc').textContent = 'Audit ini mengevaluasi keamanan gudang/toko, manajemen stok, dan proteksi aset fisik usaha dagang Anda — baik milik sendiri maupun sewa.';
       html = `
         <p class="form-section-title">Audit Gudang & Keamanan Stok</p>
         <div class="form-row">
           <div class="slider-group">
             <div class="slider-header">
-              <label class="form-label">Kondisi Keamanan Gudang/Toko</label>
+              <label class="form-label">Kondisi Keamanan Gudang/Toko (Milik Sendiri/Sewa)</label>
               <span class="slider-val" id="val-q1">5</span>
             </div>
             <input type="range" id="q1" min="1" max="10" value="5" oninput="document.getElementById('val-q1').textContent=this.value" />
@@ -1162,7 +1167,7 @@
         <div class="form-row">
           <div class="slider-group">
             <div class="slider-header">
-              <label class="form-label">Kelayakan Instalasi Listrik</label>
+              <label class="form-label">Kelayakan Instalasi Listrik Tempat Usaha</label>
               <span class="slider-val" id="val-q3">4</span>
             </div>
             <input type="range" id="q3" min="1" max="10" value="4" oninput="document.getElementById('val-q3').textContent=this.value" />
@@ -1178,14 +1183,14 @@
           </div>
         </div>
       `;
-    } else {
-      document.getElementById('stage-2-desc').textContent = 'Audit ini mengevaluasi keamanan perangkat kerja, data digital, dan manajemen proyek layanan Anda.';
+    } else if (sector === 'jasa') {
+      document.getElementById('stage-2-desc').textContent = 'Audit ini mengevaluasi keamanan perangkat kerja, penyimpanan data digital, dan manajemen proyek layanan Anda.';
       html = `
         <p class="form-section-title">Audit Aset Digital & Perangkat Kerja</p>
         <div class="form-row">
           <div class="slider-group">
             <div class="slider-header">
-              <label class="form-label">Keamanan Data Klien & Server</label>
+              <label class="form-label">Keamanan Data Klien & Penyimpanan Digital (Cloud/Server/Perangkat)</label>
               <span class="slider-val" id="val-q1">5</span>
             </div>
             <input type="range" id="q1" min="1" max="10" value="5" oninput="document.getElementById('val-q1').textContent=this.value" />
@@ -1193,7 +1198,7 @@
           </div>
           <div class="slider-group">
             <div class="slider-header">
-              <label class="form-label">Usia & Kondisi Gadget Kerja</label>
+              <label class="form-label">Usia & Kondisi Perangkat Kerja (Laptop/Komputer/Gadget)</label>
               <span class="slider-val" id="val-q2">3</span>
             </div>
             <input type="range" id="q2" min="1" max="10" value="3" oninput="document.getElementById('val-q2').textContent=this.value" />
@@ -1216,6 +1221,47 @@
             </div>
             <input type="range" id="q4" min="1" max="10" value="3" oninput="document.getElementById('val-q4').textContent=this.value" />
             <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Baik</span><span>Tidak Ada Backup</span></div>
+          </div>
+        </div>
+      `;
+    } else {
+      document.getElementById('stage-2-desc').textContent = 'Audit ini mengevaluasi risiko penyimpanan barang pelanggan, keselamatan kerja, kualitas suku cadang, dan risiko komplain garansi pada usaha reparasi Anda.';
+      html = `
+        <p class="form-section-title">Audit Risiko Usaha Reparasi & Servis</p>
+        <div class="form-row">
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Keamanan Penyimpanan Barang Milik Pelanggan</label>
+              <span class="slider-val" id="val-q1">5</span>
+            </div>
+            <input type="range" id="q1" min="1" max="10" value="5" oninput="document.getElementById('val-q1').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Aman</span><span>Sangat Rawan</span></div>
+          </div>
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Risiko Kebakaran/Korsleting dari Aktivitas Reparasi</label>
+              <span class="slider-val" id="val-q2">3</span>
+            </div>
+            <input type="range" id="q2" min="1" max="10" value="3" oninput="document.getElementById('val-q2').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Rendah</span><span>Sangat Tinggi</span></div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Ketersediaan & Keaslian Suku Cadang (Spare Part)</label>
+              <span class="slider-val" id="val-q3">4</span>
+            </div>
+            <input type="range" id="q3" min="1" max="10" value="4" oninput="document.getElementById('val-q3').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Terjamin</span><span>Tidak Terjamin</span></div>
+          </div>
+          <div class="slider-group">
+            <div class="slider-header">
+              <label class="form-label">Risiko Klaim Ulang / Komplain Garansi Servis</label>
+              <span class="slider-val" id="val-q4">3</span>
+            </div>
+            <input type="range" id="q4" min="1" max="10" value="3" oninput="document.getElementById('val-q4').textContent=this.value" />
+            <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--slate);margin-top:4px;"><span>Sangat Rendah</span><span>Sangat Tinggi</span></div>
           </div>
         </div>
       `;
@@ -1274,12 +1320,29 @@
     const pExternal = 1 - ((1 - pE1) * (1 - pE2));
 
     // ── Probabilitas Komposit ──
+    // P(Total) merepresentasikan probabilitas tahunan (annual frequency) terjadinya
+    // minimal satu peristiwa risiko yang signifikan terhadap usaha.
     const pTotal = 1 - ((1 - pInternal) * (1 - pExternal));
 
-    // ── Financial Metrics ──
+    // ── Financial Metrics (Pure Premium Aktuaria: Frequency x Severity) ──
     const omset       = parseRupiah(omsetRaw);
     const aset        = parseRupiah(asetRaw);
-    const expectedLoss = pTotal * aset;
+
+    // Severity Ratio: proporsi nilai aset yang secara realistis hilang/rusak
+    // JIKA risiko benar-benar terjadi (bukan asumsi 100% aset ludes sekaligus).
+    // Mengacu pada konsep Probable Maximum Loss (PML) dalam underwriting risiko
+    // properti: severity dasar 20% pada kondisi terkendali, meningkat proporsional
+    // mengikuti tingkat keparahan profil risiko itu sendiri, hingga maksimum 50%.
+    const severityRatio = 0.20 + (0.30 * pTotal);
+
+    // Pure Premium Tahunan = Frequency (P_total) x Severity x Nilai Aset
+    const expectedLossTahunan = pTotal * severityRatio * aset;
+
+    // Pure Premium / Expected Loss Bulanan = Pure Premium Tahunan / 12 bulan
+    // (sebelumnya P_total dikalikan langsung ke nilai aset & dianggap kerugian
+    // bulanan — ini keliru karena P_total adalah probabilitas tahunan, dan
+    // severity peristiwa risiko jarang menghabiskan seluruh nilai aset usaha).
+    const expectedLoss = expectedLossTahunan / 12;
     const rasioEksposur = (expectedLoss / omset) * 100;
 
     // ── Zone ──
@@ -1338,9 +1401,10 @@
 
     // Sector label for CTA
     const sectorLabels = {
-      kuliner: 'Usaha Kuliner & F&B',
-      dagang:  'Usaha Dagang & Ritel',
-      jasa:    'Usaha Jasa & Digital'
+      kuliner:  'Usaha Kuliner & F&B',
+      dagang:   'Usaha Dagang & Ritel',
+      jasa:     'Usaha Jasa & Digital',
+      reparasi: 'Usaha Jasa Reparasi & Elektronik'
     };
     const sectorLabel = sectorLabels[selectedSector];
 
@@ -1382,8 +1446,10 @@
         lossText = `Modal Anda tergerus halus sebesar <strong>${toRupiahStr(expectedLoss)}/bulan</strong>, setara dengan kehilangan <strong>${porsiEquiv} porsi dagangan</strong> Anda setiap bulannya — tanpa Anda sadari.`;
       } else if (selectedSector === 'dagang') {
         lossText = `Stok Anda berpotensi menyusut senilai <strong>${toRupiahStr(expectedLoss)}/bulan</strong> akibat risiko gudang dan lingkungan, setara <strong>${porsiEquiv} unit barang dagang</strong> yang hilang begitu saja.`;
-      } else {
+      } else if (selectedSector === 'jasa') {
         lossText = `Pendapatan proyek Anda terancam bocor <strong>${toRupiahStr(expectedLoss)}/bulan</strong> akibat risiko data dan perangkat, setara dengan kehilangan <strong>${porsiEquiv} jam kerja tagihan klien</strong>.`;
+      } else {
+        lossText = `Usaha reparasi Anda berpotensi menanggung kerugian senilai <strong>${toRupiahStr(expectedLoss)}/bulan</strong> akibat risiko barang pelanggan, suku cadang, dan komplain garansi, setara <strong>${porsiEquiv} unit servis</strong> yang harus dikerjakan ulang tanpa bayaran.`;
       }
       const zoneClass = zone === 'red' ? 'red' : 'yellow';
       const ctaText = zone === 'red'
