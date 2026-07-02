@@ -666,6 +666,18 @@
       z-index: 1001;
     }
   </style>
+  <!-- ═══════════════════════ ANALITIK AGREGAT ANONIM (OPSIONAL) ═══════════════════════
+       Untuk keperluan pelaporan dampak program (mis. jumlah total audit & audit
+       ulang), tanpa mengorbankan privasi data usaha. GoatCounter HANYA mencatat
+       PERISTIWA (event count) — sektor & zona risiko sebagai label agregat —
+       TIDAK PERNAH nama, omset, aset, atau PIN. Jika tag ini tidak diaktifkan
+       (data-goatcounter belum diganti dengan akun nyata), pemanggilan trackEvent()
+       di script utama akan diam-diam tidak melakukan apa pun (no-op), sehingga
+       platform tetap berfungsi normal tanpa analitik ini.
+       Cara mengaktifkan: daftar gratis di https://www.goatcounter.com, lalu
+       ganti URL di bawah dengan kode situs Anda sendiri. -->
+  <script data-goatcounter="https://GANTI-DENGAN-KODE-SITUS-ANDA.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
@@ -678,7 +690,13 @@
       <span class="logo-tagline">Mengukur Risiko Masa Depan dengan Presisi Aktuaria</span>
     </div>
   </a>
-  <span class="nav-badge">riskcerdas.id</span>
+  <div style="display:flex;align-items:center;gap:0.6rem;">
+    <button onclick="openRiwayatModal()" style="background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.35);color:var(--gold);font-size:0.72rem;font-weight:600;padding:0.4rem 0.85rem;border-radius:var(--r-full);display:inline-flex;align-items:center;gap:0.4rem;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 3v5h5M3.05 13A9 9 0 106 6.3L3 9"/><path d="M12 7v5l4 2"/></svg>
+      Riwayat Audit
+    </button>
+    <span class="nav-badge">riskcerdas.id</span>
+  </div>
 </nav>
 
 <!-- ═══════════════════════ HERO ═══════════════════════ -->
@@ -746,6 +764,7 @@
       <div class="wizard-stage active" id="stage-1">
         <h3 class="stage-title">Pilih Sektor Usaha Anda</h3>
         <p class="stage-desc">Pilih kategori yang paling mendekati jenis bisnis Anda. Kuesioner berikutnya akan disesuaikan secara otomatis.</p>
+        <div id="welcome-back-container"></div>
         <div class="sector-grid">
           <div class="sector-card" onclick="selectSector(this,'kuliner')">
             <span class="sector-icon">🍽️</span>
@@ -835,16 +854,36 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="nama-usaha">Nama Usaha</label>
-          <input type="text" id="nama-usaha" class="form-input" placeholder="Masukkan nama usaha Anda" />
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="nama-pemilik">Nama Pemilik / Penanggung Jawab</label>
-          <input type="text" id="nama-pemilik" class="form-input" placeholder="Masukkan nama lengkap Anda" />
+        <!-- Nama Usaha & Pemilik: hanya tampil di audit pertama.
+             Jika sudah pernah audit sebelumnya, field ini disembunyikan
+             dan diisi otomatis dari cache lokal perangkat. -->
+        <div id="field-nama-container">
+          <div class="form-group">
+            <label class="form-label" for="nama-usaha">Nama Usaha</label>
+            <input type="text" id="nama-usaha" class="form-input" placeholder="Masukkan nama usaha Anda" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nama-pemilik">Nama Pemilik / Penanggung Jawab</label>
+            <input type="text" id="nama-pemilik" class="form-input" placeholder="Masukkan nama lengkap Anda" />
+          </div>
         </div>
 
-        <div id="stage-3-error" class="hidden" style="color:var(--red);font-size:0.8rem;margin-bottom:0.75rem;">Mohon isi Omset dan Nilai Aset dengan benar.</div>
+        <hr class="form-divider" />
+        <p class="form-section-title">Status Proteksi Usaha Saat Ini</p>
+        <div class="form-group">
+          <label class="form-label">Sejauh mana Anda sudah mempersiapkan proteksi asuransi untuk usaha ini? <span>*</span></label>
+          <select id="status-proteksi" class="form-select">
+            <option value="">— Pilih salah satu —</option>
+            <option value="belum">Belum mulai mempersiapkan proteksi/asuransi</option>
+            <option value="menabung">Sedang menabung/mengalokasikan dana untuk berlangganan asuransi</option>
+            <option value="berlangganan">Sudah berlangganan asuransi untuk usaha ini</option>
+          </select>
+          <p style="font-size:0.7rem;color:var(--slate);margin-top:0.4rem;line-height:1.5;">Jawaban ini membantu kami memahami sejauh mana audit ini meningkatkan kesadaran Anda terhadap proteksi usaha. Ini bukan kewajiban, dan platform ini tidak menjual produk asuransi apa pun secara langsung — murni untuk keperluan literasi.</p>
+        </div>
+
+        <div id="stage-3-error" class="hidden" style="color:var(--red);font-size:0.8rem;margin-bottom:0.75rem;">Mohon isi Omset, Nilai Aset, dan Status Proteksi dengan benar.</div>
+
+        <p style="font-size:0.66rem;color:var(--slate);line-height:1.5;margin-bottom:0.5rem;">Statistik agregat dan anonim (jumlah audit, sektor, zona risiko) dicatat untuk keperluan pelaporan dampak program. Data ini <strong>tidak pernah</strong> menyertakan nama, omset, aset, atau PIN Anda.</p>
 
         <div class="btn-row">
           <button class="btn-secondary" onclick="goToStage(2)">
@@ -983,15 +1022,31 @@
     </div>
     <p class="download-hint">Sertifikat akan diunduh sebagai gambar resolusi tinggi yang dapat dicetak atau dibagikan.</p>
 
+    <!-- Simpan ke Riwayat Audit (terenkripsi, lokal di perangkat) -->
+    <div style="max-width:520px;margin:0 auto 1.5rem;background:var(--white);border:1.5px solid var(--slate-lt);border-radius:var(--r-xl);padding:1.25rem 1.5rem;">
+      <p style="font-size:0.82rem;font-weight:700;color:var(--navy);margin-bottom:0.35rem;display:flex;align-items:center;gap:0.4rem;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold-dk)" stroke-width="2.3"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V8a5 5 0 0110 0v3"/></svg>
+        Simpan Audit Ini ke Riwayat (Opsional)
+      </p>
+      <p style="font-size:0.74rem;color:var(--slate);margin-bottom:0.75rem;line-height:1.55;">Buat PIN untuk mengenkripsi hasil audit ini dan menyimpannya <strong>hanya di perangkat ini</strong> — data tidak pernah dikirim ke server atau pihak manapun. Gunakan PIN yang sama untuk melihat riwayat nanti.</p>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <input type="password" id="simpan-pin-input" class="form-input" style="flex:1;min-width:160px;" placeholder="Buat PIN (min. 4 karakter)" />
+        <button class="btn-secondary" id="btn-simpan-riwayat" onclick="simpanKeRiwayat()">Simpan</button>
+      </div>
+      <div id="simpan-riwayat-status" style="font-size:0.74rem;margin-top:0.6rem;"></div>
+    </div>
+
     <!-- CTA Asuransi — di luar sertifikat -->
     <div class="cta-asuransi" id="cert-cta-block" style="display:none;">
       <div class="cta-asuransi-left">
         <div class="cta-asuransi-label">Rekomendasi Proteksi</div>
         <div class="cta-asuransi-text" id="cert-cta-text">Lindungi bisnis Anda dengan asuransi mikro terpercaya.</div>
+        <div id="cert-jenis-proteksi" style="margin-top:0.5rem;font-size:0.72rem;color:rgba(255,255,255,0.7);">Jenis proteksi yang relevan: <strong>—</strong></div>
+        <div style="margin-top:0.5rem;font-size:0.7rem;color:rgba(255,255,255,0.55);line-height:1.5;">💡 Asuransi usaha umumnya jauh lebih terjangkau dari yang dibayangkan — produk asuransi mikro tersedia mulai puluhan ribu rupiah per bulan, dan premi asuransi kebakaran/properti pada umumnya berkisar 0,05%–0,25% dari nilai aset yang diasuransikan per tahun.</div>
       </div>
       <a href="https://asuransiastra.com" target="_blank" rel="noopener noreferrer" class="cta-asuransi-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-        Asuransi Astra Mikro
+        Konsultasi ke Asuransi Astra
       </a>
     </div>
 
@@ -1031,14 +1086,41 @@
       <div class="edu-card">
         <div class="edu-card-icon">🛡️</div>
         <div class="edu-card-title">Transfer Risiko Mikro</div>
-        <div class="edu-card-desc">Temukan produk asuransi mikro yang sesuai untuk mentransfer risiko finansial kepada pihak ketiga yang kompeten.</div>
+        <div class="edu-card-desc">Setiap hasil audit memetakan jenis proteksi yang relevan sesuai faktor risiko paling dominan pada usaha Anda, untuk mentransfer risiko finansial kepada pihak ketiga yang kompeten.</div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ═══════════════════════ MODAL RIWAYAT AUDIT ═══════════════════════ -->
+<div id="riwayat-modal" class="hidden" style="position:fixed;inset:0;z-index:999;background:rgba(11,19,43,0.65);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:1.5rem;">
+  <div style="background:var(--white);border-radius:var(--r-2xl);max-width:600px;width:100%;max-height:85vh;overflow-y:auto;padding:2rem;box-shadow:var(--shadow-xl);position:relative;">
+    <button onclick="closeRiwayatModal()" aria-label="Tutup" style="position:absolute;top:1rem;right:1.25rem;background:transparent;border:none;font-size:1.4rem;color:var(--slate);cursor:pointer;line-height:1;">&times;</button>
+
+    <h3 class="stage-title">📜 Riwayat Audit Anda</h3>
+    <p class="stage-desc">Riwayat audit dienkripsi dan hanya tersimpan secara lokal di perangkat ini — tidak ada server yang menyimpan atau bisa mengakses data Anda. Masukkan PIN yang dipakai saat menyimpan untuk melihatnya.</p>
+
+    <div id="riwayat-pin-form">
+      <div class="form-group">
+        <label class="form-label">PIN Riwayat</label>
+        <input type="password" id="riwayat-pin-input" class="form-input" placeholder="Masukkan PIN Anda" />
+      </div>
+      <div id="riwayat-error" class="hidden" style="color:var(--red);font-size:0.8rem;margin-bottom:0.75rem;">PIN salah, atau belum ada riwayat tersimpan dengan PIN ini di perangkat ini.</div>
+      <button class="btn-primary" onclick="bukaRiwayat()">Lihat Riwayat</button>
+    </div>
+
+    <div id="riwayat-list-container" class="hidden">
+      <div id="riwayat-list"></div>
+      <button class="btn-reset" onclick="hapusSemuaRiwayat()" style="margin-top:1.5rem;color:var(--red);border-color:rgba(220,38,38,0.3);">
+        🗑️ Hapus Semua Riwayat dari Perangkat Ini
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
 <footer class="footer">
+
   <div class="footer-brand">HitungRisiko</div>
 
   <!-- Bagian Disclaimer Lengkap yang Menyatu Profesional -->
@@ -1058,6 +1140,232 @@
 <script>
   /* ─────── STATE ─────── */
   let selectedSector = null;
+  let behaviorChangeResponse = null; // diisi jika pengguna menjawab kartu "Selamat Datang Kembali"
+
+  /* ─────── DETEKSI AUDIT PERTAMA vs AUDIT ULANG ───────
+     Prinsip: pertanyaan "behavior change" (sudahkah diperbaiki?) HANYA
+     relevan jika pengguna sudah pernah audit sebelumnya — pada audit
+     pertama, belum ada apa pun untuk dibandingkan/diperbaiki, jadi
+     pertanyaan itu wajib disembunyikan sepenuhnya.
+
+     Mekanisme deteksi: menyimpan jejak RINGAN dan TIDAK SENSITIF (bukan
+     riwayat audit terenkripsi yang sudah ada) di localStorage biasa —
+     hanya berisi kategori faktor risiko & tanggal, TANPA data finansial
+     atau identitas apa pun, sehingga aman disimpan tanpa enkripsi.
+     Ini terpisah total dari modul Riwayat Audit (yang tetap terenkripsi
+     dengan PIN) — jejak ini murni untuk kontinuitas pengalaman pengguna
+     di perangkat yang sama, bukan untuk menyimpan data usaha. */
+  const LAST_SESSION_KEY = 'hitungrisiko_last_session_v1';
+  /* Cache TERPISAH khusus untuk auto-fill nama usaha & pemilik.
+     Sengaja dipisah dari LAST_SESSION_KEY (jejak faktor risiko) agar
+     perannya jelas: ini untuk kenyamanan UX, bukan data analitik.
+     Tidak pernah masuk ke riwayat terenkripsi maupun GoatCounter. */
+  const NAME_CACHE_KEY = 'hitungrisiko_names_v1';
+
+  function getNamesCache() {
+    try { const r = localStorage.getItem(NAME_CACHE_KEY); return r ? JSON.parse(r) : null; }
+    catch (e) { return null; }
+  }
+  function setNamesCache(namaUsaha, namaPemilik) {
+    try { localStorage.setItem(NAME_CACHE_KEY, JSON.stringify({ namaUsaha, namaPemilik })); }
+    catch (e) {}
+  }
+
+  function applyNamesAutoFill() {
+    const last = getLastSession();
+    const names = getNamesCache();
+    const container = document.getElementById('field-nama-container');
+    // Hanya tampilkan auto-fill jika:
+    // (1) pernah audit sebelumnya, DAN
+    // (2) sektor yang dipilih SAMA dengan sektor audit terakhir
+    // Jika berbeda sektor, tampilkan form kosong seperti biasa karena
+    // nama usaha yang berbeda sektor mungkin usaha yang berbeda pula.
+    if (!last || !names || last.sektor !== selectedSector) return;
+    container.innerHTML = `
+      <div style="background:rgba(212,175,55,0.07);border:1.5px solid rgba(212,175,55,0.2);border-radius:var(--r-lg);padding:0.85rem 1.1rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+        <div>
+          <span style="font-size:0.68rem;font-weight:700;color:var(--gold-dk);letter-spacing:0.06em;text-transform:uppercase;">Data Sebelumnya</span>
+          <p style="font-size:0.82rem;color:var(--navy);margin-top:2px;"><strong>${names.namaUsaha || '—'}</strong> · ${names.namaPemilik || '—'}</p>
+        </div>
+        <button type="button" onclick="resetNamesAutoFill()" style="font-size:0.7rem;color:var(--slate);background:transparent;border:1px solid var(--slate-lt);border-radius:var(--r-full);padding:0.3rem 0.7rem;cursor:pointer;">Ganti</button>
+      </div>
+      <input type="hidden" id="nama-usaha" value="${names.namaUsaha || ''}" />
+      <input type="hidden" id="nama-pemilik" value="${names.namaPemilik || ''}" />`;
+  }
+
+  function resetNamesAutoFill() {
+    const container = document.getElementById('field-nama-container');
+    container.innerHTML = `
+      <div class="form-group">
+        <label class="form-label" for="nama-usaha">Nama Usaha</label>
+        <input type="text" id="nama-usaha" class="form-input" placeholder="Masukkan nama usaha Anda" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="nama-pemilik">Nama Pemilik / Penanggung Jawab</label>
+        <input type="text" id="nama-pemilik" class="form-input" placeholder="Masukkan nama lengkap Anda" />
+      </div>`;
+  }
+
+  function getLastSession() {
+    try {
+      const raw = localStorage.getItem(LAST_SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+  function setLastSession(obj) {
+    try { localStorage.setItem(LAST_SESSION_KEY, JSON.stringify(obj)); } catch (e) {
+      console.error('Gagal menyimpan jejak sesi:', e);
+    }
+  }
+
+  function renderWelcomeBackCard() {
+    const container = document.getElementById('welcome-back-container');
+    const last = getLastSession();
+    if (!last) return;
+
+    const tgl = new Date(last.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+    container.innerHTML = `
+      <div style="
+        background:linear-gradient(135deg,var(--navy) 0%,#162040 100%);
+        border:2px solid var(--gold);
+        border-radius:var(--r-2xl);
+        padding:1.4rem 1.5rem;
+        margin-bottom:1.75rem;
+        position:relative;
+        overflow:hidden;
+      ">
+        <!-- Aksen cahaya di sudut -->
+        <div style="position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(212,175,55,0.18) 0%,transparent 70%);pointer-events:none;"></div>
+
+        <!-- Badge beranimasi -->
+        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.4);border-radius:var(--r-full);padding:0.28rem 0.85rem;margin-bottom:0.85rem;">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block;animation:pulse-dot 1.8s ease-in-out infinite;"></span>
+          <span style="font-size:0.68rem;font-weight:700;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;">Audit Ulang Terdeteksi</span>
+        </div>
+
+        <p style="font-size:0.95rem;font-weight:800;color:var(--white);margin-bottom:0.4rem;line-height:1.35;">Satu pertanyaan penting<br/>sebelum Anda mulai 👇</p>
+        <p style="font-size:0.8rem;color:rgba(255,255,255,0.65);margin-bottom:1.1rem;line-height:1.55;">Audit terakhir Anda (<strong style="color:rgba(255,255,255,0.85);">${tgl}</strong>) menyoroti risiko terkait <strong style="color:var(--gold);">${last.faktorTerkait}</strong>. Apakah sudah ada tindak lanjut?</p>
+
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;" id="behavior-response-buttons">
+          <button type="button"
+            onclick="pilihBehaviorResponse('sudah', this)"
+            style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(22,163,74,0.15);border:1.5px solid rgba(22,163,74,0.4);color:#4ade80;font-size:0.78rem;font-weight:700;padding:0.55rem 1rem;border-radius:var(--r-full);cursor:pointer;transition:all 0.25s;">
+            ✓ Sudah Ditindaklanjuti
+          </button>
+          <button type="button"
+            onclick="pilihBehaviorResponse('sebagian', this)"
+            style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(217,119,6,0.15);border:1.5px solid rgba(217,119,6,0.4);color:#fbbf24;font-size:0.78rem;font-weight:700;padding:0.55rem 1rem;border-radius:var(--r-full);cursor:pointer;transition:all 0.25s;">
+            ◐ Sebagian
+          </button>
+          <button type="button"
+            onclick="pilihBehaviorResponse('belum', this)"
+            style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(220,38,38,0.12);border:1.5px solid rgba(220,38,38,0.35);color:#f87171;font-size:0.78rem;font-weight:700;padding:0.55rem 1rem;border-radius:var(--r-full);cursor:pointer;transition:all 0.25s;">
+            ○ Belum Sempat
+          </button>
+        </div>
+        <p style="font-size:0.65rem;color:rgba(255,255,255,0.35);margin-top:0.75rem;">Pertanyaan ini opsional — Anda tetap bisa langsung memilih sektor usaha di bawah.</p>
+      </div>`;
+  }
+
+  function pilihBehaviorResponse(jawaban, btnEl) {
+    behaviorChangeResponse = jawaban;
+    // Reset semua tombol ke state default
+    document.querySelectorAll('#behavior-response-buttons button').forEach(b => {
+      b.style.opacity = '0.45';
+      b.style.transform = 'scale(0.97)';
+    });
+    // Highlight tombol terpilih
+    btnEl.style.opacity = '1';
+    btnEl.style.transform = 'scale(1.04)';
+    btnEl.style.boxShadow = '0 0 0 3px rgba(212,175,55,0.3)';
+
+    // Catat jawaban tindak lanjut ke GoatCounter secara agregat-anonim.
+    // Event ini hanya muncul pada pengguna yang audit ULANG (karena kartu
+    // welcome-back hanya tampil jika sudah pernah audit sebelumnya).
+    // Data yang dikirim: peristiwa "tindak-lanjut" + jawaban + sektor.
+    // TIDAK dikirim: nama, omset, aset, PIN, atau identitas apa pun.
+    // Di GoatCounter, Anda bisa lihat distribusi:
+    //   tindak-lanjut?jawaban=sudah&sektor=kuliner → X klik
+    //   tindak-lanjut?jawaban=sebagian&sektor=dagang → Y klik
+    //   tindak-lanjut?jawaban=belum&sektor=jasa → Z klik
+    // Ini langsung menjadi bukti kuantitatif perubahan perilaku (behavior
+    // change) yang bisa dilaporkan ke juri sebagai indikator dampak literasi.
+    const last = getLastSession();
+    trackEvent('tindak-lanjut', {
+      jawaban: jawaban,
+      sektor: (last && last.sektor) ? last.sektor : 'tidak-diketahui',
+    });
+  }
+
+  /* ─────── ANALITIK AGREGAT ANONIM (untuk pelaporan dampak program) ───────
+     PRINSIP: hanya mencatat PERISTIWA + label kategori (sektor, zona,
+     status audit-ulang) — TIDAK PERNAH data finansial, nama, atau PIN.
+     Jika GoatCounter belum dikonfigurasi (lihat <head>), fungsi ini
+     otomatis tidak melakukan apa pun (no-op) — platform tetap berjalan
+     normal tanpa analitik ini. */
+  function trackEvent(eventName, props) {
+    try {
+      if (window.goatcounter && typeof window.goatcounter.count === 'function') {
+        const query = props ? '?' + Object.entries(props).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&') : '';
+        window.goatcounter.count({ path: eventName + query, event: true });
+      }
+    } catch (e) { /* diam-diam diabaikan — analitik tidak boleh mengganggu fungsi utama */ }
+  }
+
+  /* ─────── MAPPING FAKTOR RISIKO → JENIS PROTEKSI YANG RELEVAN ───────
+     Setiap pertanyaan audit (q1-q4 per sektor) dan faktor eksternal
+     (banjir, kriminalitas) dipetakan ke KATEGORI asuransi yang secara
+     nyata berkaitan dengan jenis risiko tersebut — bukan rekomendasi
+     generik "asuransi mikro" yang sama untuk semua kondisi. Ini memastikan
+     solusi yang ditampilkan relevan dengan pertanyaan yang mendasarinya. */
+  /* ─────── PRODUK ASURANSI ASTRA YANG TERKONFIRMASI TERSEDIA ───────
+     Berdasarkan penelusuran lini produk komersial Asuransi Astra
+     (asuransiastra.com/commercial). Hanya 4 kategori berikut yang
+     terkonfirmasi nyata ada di Astra — dipakai sebagai acuan astraMatch: */
+  const ASTRA_PRODUK = {
+    fire_property: 'Asuransi Kebakaran & Harta Benda (dapat diperluas: gangguan usaha, bencana alam, pencurian)',
+    public_liability: 'Asuransi Tanggung Jawab Publik',
+    electronic_equipment: 'Asuransi Peralatan Elektronik',
+    personal_accident: 'Asuransi Kecelakaan Diri (Garda Mikro)',
+  };
+
+  const proteksiMap = {
+    kuliner: [
+      { jenis: 'Asuransi Kebakaran & Peralatan Usaha', terkait: 'kondisi peralatan memasak', astraMatch: 'fire_property' },
+      { jenis: 'Asuransi Kebakaran & Properti Usaha', terkait: 'risiko sumber energi & tempat produksi', astraMatch: 'fire_property' },
+      { jenis: 'Asuransi Tanggung Jawab Produk', terkait: 'standar higienitas tempat produksi', astraMatch: 'public_liability', catatan: 'umumnya tercakup sebagai perluasan klaim pihak ketiga pada Tanggung Jawab Publik' },
+      { jenis: 'Asuransi Tanggung Jawab Produk', terkait: 'risiko kontaminasi bahan baku', astraMatch: 'public_liability', catatan: 'umumnya tercakup sebagai perluasan klaim pihak ketiga pada Tanggung Jawab Publik' },
+    ],
+    dagang: [
+      { jenis: 'Asuransi Kebakaran & Properti Usaha', terkait: 'keamanan gudang/toko', astraMatch: 'fire_property' },
+      { jenis: 'Asuransi Properti & Stok Usaha', terkait: 'risiko kerusakan stok', astraMatch: 'fire_property' },
+      { jenis: 'Asuransi Kebakaran & Properti Usaha', terkait: 'kelayakan instalasi listrik', astraMatch: 'fire_property' },
+      { jenis: 'Asuransi Pencurian & Properti Usaha', terkait: 'risiko pencurian stok', astraMatch: 'fire_property', catatan: 'umumnya tersedia sebagai perluasan jaminan pencurian pada polis Kebakaran & Harta Benda' },
+    ],
+    jasa: [
+      { jenis: 'Asuransi Siber & Keamanan Data', terkait: 'keamanan data klien & penyimpanan digital', astraMatch: null },
+      { jenis: 'Asuransi Peralatan Elektronik', terkait: 'usia & kondisi perangkat kerja', astraMatch: 'electronic_equipment' },
+      { jenis: 'Asuransi Tanggung Jawab Profesional (Professional Indemnity)', terkait: 'risiko gagal proyek/wanprestasi', astraMatch: null },
+      { jenis: 'Asuransi Siber', terkait: 'manajemen backup & recovery data', astraMatch: null },
+    ],
+    reparasi: [
+      { jenis: 'Asuransi Tanggung Jawab Penyimpanan Barang Titipan (Bailee)', terkait: 'keamanan penyimpanan barang pelanggan', astraMatch: null },
+      { jenis: 'Asuransi Kebakaran & Properti Usaha', terkait: 'risiko kebakaran/korsleting', astraMatch: 'fire_property' },
+      { jenis: 'Asuransi Tanggung Jawab Produk', terkait: 'keaslian suku cadang', astraMatch: 'public_liability', catatan: 'umumnya tercakup sebagai perluasan klaim pihak ketiga pada Tanggung Jawab Publik' },
+      { jenis: 'Asuransi Tanggung Jawab Profesional', terkait: 'risiko klaim ulang/komplain garansi', astraMatch: null },
+    ],
+  };
+  const proteksiEksternal = {
+    banjir: { jenis: 'Asuransi Properti terhadap Bencana Alam (Banjir)', terkait: 'risiko banjir area', astraMatch: 'fire_property', catatan: 'umumnya tersedia sebagai perluasan jaminan bencana alam pada polis Kebakaran & Harta Benda' },
+    kriminalitas: { jenis: 'Asuransi Pencurian & Properti Usaha', terkait: 'tingkat kriminalitas area', astraMatch: 'fire_property', catatan: 'umumnya tersedia sebagai perluasan jaminan pencurian pada polis Kebakaran & Harta Benda' },
+  };
+
+  /* ─────── ALTERNATIF UMUM SAAT ASTRA TIDAK MENYEDIAKAN ───────
+     Untuk kategori yang astraMatch-nya null (Siber, Professional Indemnity,
+     Bailee), platform TETAP memberi arah konkret — bukan rekomendasi
+     kosong — dengan menyarankan jalur konsultasi yang jujur, bukan
+     mengklaim produk yang sebenarnya tidak dijual Astra. */
+  const ALTERNATIF_UMUM = 'Kategori ini saat ini berada di luar lini produk utama Asuransi Astra. Pertimbangkan berkonsultasi dengan broker asuransi komersial berizin OJK lainnya yang memiliki spesialisasi pada kategori ini, atau tanyakan langsung saat konsultasi ke Astra — beberapa kebutuhan spesifik terkadang dapat diatur melalui penyesuaian polis (rider) khusus.';
 
   /* ─────── SECTOR SELECT ─────── */
   function selectSector(el, sector) {
@@ -1094,6 +1402,7 @@
 
   function goToStage3() {
     goToStage(3);
+    applyNamesAutoFill(); // sembunyikan field nama jika sudah pernah audit
   }
 
   /* ─────── AUDIT FORM RENDERER ─────── */
@@ -1288,9 +1597,10 @@
   function generateCertificate() {
     const omsetRaw = document.getElementById('omset').value;
     const asetRaw  = document.getElementById('aset').value;
+    const statusProteksi = document.getElementById('status-proteksi').value;
     const errEl    = document.getElementById('stage-3-error');
 
-    if (!omsetRaw || !asetRaw || parseRupiah(omsetRaw) === 0 || parseRupiah(asetRaw) === 0) {
+    if (!omsetRaw || !asetRaw || parseRupiah(omsetRaw) === 0 || parseRupiah(asetRaw) === 0 || !statusProteksi) {
       errEl.classList.remove('hidden');
       return;
     }
@@ -1305,19 +1615,91 @@
     const kriminalitas = parseFloat(document.getElementById('risk-kriminalitas').value);
 
     // ── Probabilitas Internal ──
-    // Normalize 1-10 → 0.01 - 0.30 per faktor
-    const pI1 = (q1 / 10) * 0.25;
-    const pI2 = (q2 / 10) * 0.20;
-    const pI3 = (q3 / 10) * 0.20;
-    const pI4 = (q4 / 10) * 0.25;
+    // Normalisasi (nilai-1)/9: slider di posisi paling aman (=1) menyumbang
+    // kontribusi MINIMAL (bukan nol absolut) terhadap probabilitas, sedangkan
+    // posisi paling buruk (=10) menyumbang probabilitas penuh sesuai bobotnya.
+    //
+    // PERBAIKAN BUG: rumus sebelumnya membuat P(Total) bisa menjadi TEPAT 0%
+    // jika seluruh slider diisi nilai 1 — yang secara aktuaria tidak realistis
+    // (tidak ada usaha yang benar-benar nol risiko) dan berakibat fatal:
+    // Expected Loss = P(Total) x Severity x Aset akan ikut menjadi 0,
+    // SEBERAPA BESAR PUN nilai Omset/Aset yang diisi. Ini membuat input
+    // finansial terasa "tidak berguna". Diperbaiki dengan menambahkan
+    // BASELINE RISIKO RESIDUAL — risiko inheren yang tetap ada meski kondisi
+    // operasional sudah optimal (mesin/alat tetap bisa gagal, kecelakaan
+    // tetap mungkin terjadi meski sudah sangat berhati-hati).
+    const BASELINE_INTERNAL = 0.02;  // risiko residual operasional minimum (2%)
+    const BASELINE_EXTERNAL = 0.01;  // risiko residual lingkungan minimum (1%)
 
-    // Composite internal: 1 - product(1-pIx)
-    const pInternal = 1 - ((1 - pI1) * (1 - pI2) * (1 - pI3) * (1 - pI4));
+    const pI1 = ((q1 - 1) / 9) * 0.05;
+    const pI2 = ((q2 - 1) / 9) * 0.04;
+    const pI3 = ((q3 - 1) / 9) * 0.04;
+    const pI4 = ((q4 - 1) / 9) * 0.05;
+
+    // Composite internal: 1 - product(1-pIx), termasuk baseline residual
+    const pInternal = 1 - ((1 - pI1) * (1 - pI2) * (1 - pI3) * (1 - pI4) * (1 - BASELINE_INTERNAL));
 
     // ── Probabilitas Eksternal ──
-    const pE1 = (banjir / 10) * 0.25;
-    const pE2 = (kriminalitas / 10) * 0.25;
-    const pExternal = 1 - ((1 - pE1) * (1 - pE2));
+    const pE1 = ((banjir - 1) / 9) * 0.05;
+    const pE2 = ((kriminalitas - 1) / 9) * 0.05;
+    const pExternal = 1 - ((1 - pE1) * (1 - pE2) * (1 - BASELINE_EXTERNAL));
+
+    // ── Rekomendasi Jenis Proteksi (berbasis nilai slider langsung) ──
+    // PERUBAHAN LOGIKA: pertanyaan audit sekarang berperan MURNI untuk
+    // menentukan rekomendasi jenis asuransi — bukan untuk kalkulasi zona.
+    // Slider > 1 (tidak di posisi paling aman) → faktor itu direkomendasikan.
+    // Slider = 1 → tidak ada risiko yang perlu direkomendasikan untuk faktor itu.
+    // Hasil: semua slider = 10 → semua 4-6 jenis proteksi tampil.
+    //        semua slider = 1  → tidak ada rekomendasi, hanya link konsultasi.
+    const sektorMap = proteksiMap[selectedSector];
+    const sliderValues = [q1, q2, q3, q4, banjir, kriminalitas];
+    const allFaktors = [
+      { slider: q1,          info: sektorMap[0] },
+      { slider: q2,          info: sektorMap[1] },
+      { slider: q3,          info: sektorMap[2] },
+      { slider: q4,          info: sektorMap[3] },
+      { slider: banjir,      info: proteksiEksternal.banjir },
+      { slider: kriminalitas, info: proteksiEksternal.kriminalitas },
+    ];
+
+    // Kumpulkan semua rekomendasi unik dari faktor yang slidernya > 1,
+    // hindari duplikasi jika beberapa faktor merekomendasikan jenis yang sama.
+    const rekomendasiList = [];
+    const jenisYangSudahAda = new Set();
+    allFaktors.forEach(f => {
+      if (f.slider > 1 && !jenisYangSudahAda.has(f.info.jenis)) {
+        jenisYangSudahAda.add(f.info.jenis);
+        rekomendasiList.push(f.info);
+      }
+    });
+
+    // Untuk setLastSession — ambil faktor dengan slider tertinggi sebagai
+    // "faktor dominan" untuk kartu welcome-back di kunjungan berikutnya.
+    const faktorDominan = allFaktors.slice().sort((a, b) => b.slider - a.slider)[0].info;
+
+    // Bangun HTML rekomendasi berdasarkan jumlah dan ketersediaan di Astra
+    let proteksiHtml = '';
+    if (rekomendasiList.length === 0) {
+      // Semua slider = 1: kondisi audit sangat baik, tidak ada rekomendasi spesifik
+      proteksiHtml = `<span style="opacity:0.8;">✓ Kondisi audit Anda sangat baik di semua aspek — tidak ada jenis proteksi khusus yang mendesak saat ini.</span>`;
+    } else {
+      const items = rekomendasiList.map(r => {
+        const statusAstra = r.astraMatch
+          ? `<span style="color:rgba(255,255,255,0.65);font-size:0.68rem;">✓ Tersedia di Astra: ${ASTRA_PRODUK[r.astraMatch]}${r.catatan ? ' (' + r.catatan + ')' : ''}</span>`
+          : `<span style="color:rgba(255,255,255,0.55);font-size:0.68rem;">ℹ️ Di luar lini utama Astra — konsultasikan ke broker OJK atau tanyakan langsung ke Astra</span>`;
+        return `<li style="margin-bottom:0.6rem;">
+          <span style="font-size:0.76rem;font-weight:700;color:rgba(255,255,255,0.9);">${r.jenis}</span><br/>
+          <span style="font-size:0.68rem;color:rgba(255,255,255,0.55);">Terkait: ${r.terkait}</span><br/>
+          ${statusAstra}
+        </li>`;
+      }).join('');
+      proteksiHtml = `
+        <span style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.75);display:block;margin-bottom:0.5rem;">
+          ${rekomendasiList.length} jenis proteksi yang relevan berdasarkan audit Anda:
+        </span>
+        <ul style="list-style:none;margin:0;padding:0;">${items}</ul>`;
+    }
+    document.getElementById('cert-jenis-proteksi').innerHTML = proteksiHtml;
 
     // ── Probabilitas Komposit ──
     // P(Total) merepresentasikan probabilitas tahunan (annual frequency) terjadinya
@@ -1346,22 +1728,72 @@
     const rasioEksposur = (expectedLoss / omset) * 100;
 
     // ── Zone ──
-    let zone, zoneLabel, predikat, zoneDesc;
-    if (pTotal >= 0.15) {
-      zone = 'red';
+    // PERBAIKAN BUG: zona sebelumnya HANYA ditentukan dari P(Total) — yaitu
+    // probabilitas hasil audit kuesioner. Ini membuat input Omset & Total
+    // Aset Usaha terasa tidak berpengaruh ke hasil: usaha dengan jawaban
+    // audit "sempurna" akan selalu Hijau, walau secara finansial Aset jauh
+    // tidak proporsional terhadap Omset (artinya kerugian sekecil apa pun
+    // tetap akan sangat membebani usaha tersebut).
+    //
+    // Diperbaiki dengan MENGGABUNGKAN dua sudut pandang risiko:
+    // (1) Probabilitas — seberapa SERING risiko kemungkinan terjadi (dari
+    //     jawaban audit operasional & lingkungan).
+    // (2) Eksposur Finansial — seberapa BERAT dampak kerugian tersebut
+    //     dibandingkan kemampuan Omset usaha menanggungnya.
+    // Zona akhir mengambil kondisi yang LEBIH BURUK dari kedua sudut
+    // pandang ini — selaras dengan prinsip kehati-hatian (prudence) dalam
+    // manajemen risiko aktuaria: tidak cukup hanya "jarang terjadi" jika
+    // saat terjadi, dampaknya bisa melumpuhkan usaha secara finansial.
+    function klasifikasiDariProbabilitas(p) {
+      if (p >= 0.15) return 'red';
+      if (p >= 0.06) return 'yellow';
+      return 'green';
+    }
+    function klasifikasiDariEksposur(rasio) {
+      if (rasio >= 5) return 'red';     // Expected Loss ≥ 5% omset bulanan
+      if (rasio >= 2) return 'yellow';  // Expected Loss 2%-5% omset bulanan
+      return 'green';
+    }
+    const urutanKeparahan = { green: 0, yellow: 1, red: 2 };
+    const zoneProbabilitas = klasifikasiDariProbabilitas(pTotal);
+    const zoneEksposur = klasifikasiDariEksposur(rasioEksposur);
+
+    // PERBAIKAN BUG: logika MAX(prob, finansial) sebelumnya membuat zona
+    // terpaksa kuning meski rasio eksposur finansial sangat kecil (< 2%)
+    // hanya karena probabilitas audit sedang (6-15%). Ini tidak proporsional
+    // — jika usaha secara finansial sudah aman, probabilitas sedang tidak
+    // seharusnya menaikkan zona ke kuning. Aturan baru yang lebih adil:
+    //
+    // • Finansial HIJAU + Prob KUNING  → HIJAU   (finansial aman, anggap terkendali)
+    // • Finansial HIJAU + Prob MERAH   → KUNING  (prob sangat tinggi tetap perlu perhatian)
+    // • Finansial KUNING/MERAH         → MAX(prob, finansial) seperti sebelumnya
+    let zone;
+    if (zoneEksposur === 'green' && zoneProbabilitas === 'yellow') {
+      zone = 'green';
+    } else if (zoneEksposur === 'green' && zoneProbabilitas === 'red') {
+      zone = 'yellow';
+    } else {
+      zone = urutanKeparahan[zoneEksposur] > urutanKeparahan[zoneProbabilitas] ? zoneEksposur : zoneProbabilitas;
+    }
+    const pemicuUtama = zoneEksposur !== 'green' && urutanKeparahan[zoneEksposur] >= urutanKeparahan[zoneProbabilitas] ? 'finansial' : 'probabilitas';
+
+    let zoneLabel, predikat, zoneDesc;
+    if (zone === 'red') {
       zoneLabel = 'Zona Merah — Tingkat Kritis';
       predikat = 'Risiko Kritis: Intervensi Segera Diperlukan';
-      zoneDesc = 'Profil risiko usaha Anda berada pada level berbahaya. Potensi kerugian finansial signifikan dalam 12 bulan ke depan.';
-    } else if (pTotal >= 0.06) {
-      zone = 'yellow';
+      zoneDesc = pemicuUtama === 'finansial'
+        ? 'Meski kondisi operasional cukup baik, proporsi Expected Loss terhadap Omset Anda sangat tinggi — beban finansial dari potensi kerugian ini bisa melumpuhkan arus kas usaha.'
+        : 'Profil risiko usaha Anda berada pada level berbahaya. Potensi kerugian finansial signifikan dalam 12 bulan ke depan.';
+    } else if (zone === 'yellow') {
       zoneLabel = 'Zona Kuning — Tingkat Waspada';
       predikat = 'Perlu Perhatian: Optimalkan Mitigasi Risiko';
-      zoneDesc = 'Risiko usaha Anda berada di level menengah. Langkah mitigasi proaktif sangat direkomendasikan segera.';
+      zoneDesc = pemicuUtama === 'finansial'
+        ? 'Kondisi operasional Anda relatif terkendali, namun rasio Expected Loss terhadap Omset menunjukkan usaha Anda masih rentan secara finansial bila risiko terjadi.'
+        : 'Risiko usaha Anda berada di level menengah. Langkah mitigasi proaktif sangat direkomendasikan segera.';
     } else {
-      zone = 'green';
       zoneLabel = 'Zona Hijau — Tingkat Stabil';
       predikat = 'Predikat: Sangat Stabil & Akurat';
-      zoneDesc = 'Selamat! Profil risiko usaha Anda menunjukkan kondisi sangat baik dan terkendali secara aktuaria.';
+      zoneDesc = 'Selamat! Profil risiko usaha Anda menunjukkan kondisi sangat baik dan terkendali secara aktuaria, baik dari sisi probabilitas maupun ketahanan finansial.';
     }
 
     // ── Cert ID ──
@@ -1435,26 +1867,61 @@
             <div class="expansion-card-desc">Meski risiko rendah, lindungi aset bisnis yang sudah terbangun dengan polis asuransi mikro yang premi-nya sangat terjangkau.</div>
           </div>
         </div>
+        <div style="background:rgba(212,175,55,0.07);border:1.5px solid rgba(212,175,55,0.25);border-radius:var(--r-xl);padding:1.1rem 1.5rem;margin-top:1.25rem;margin-bottom:0.25rem;">
+          <p style="font-size:0.78rem;font-weight:700;color:var(--gold-dk);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.4rem;">💡 Tahukah Anda?</p>
+          <p style="font-size:0.85rem;color:var(--navy);line-height:1.65;">Risiko paling berbahaya bukan yang besar — tapi yang dibiarkan karena dianggap kecil. Jadwalkan pengecekan kondisi ${sectorLabel} Anda setiap minggu, catat setiap perubahan sekecil apa pun, dan perbaiki sebelum sempat ditunda. Konsistensi kecil seperti inilah yang membedakan usaha yang tetap stabil dari yang mendadak merugi.</p>
+        </div>
       `;
       document.getElementById('cert-cta-block').style.display = 'flex';
-      document.getElementById('cert-cta-text').textContent = `Pertahankan kondisi stabil ${sectorLabel} Anda dengan proteksi asuransi mikro terencana sejak dini.`;
+      document.getElementById('cert-cta-text').textContent = rekomendasiList.length === 0
+        ? `Kondisi ${sectorLabel} Anda sangat baik di semua aspek. Konsultasi ke Asuransi Astra tetap bisa dilakukan sebagai langkah berjaga-jaga untuk mengamankan aset yang sudah Anda bangun.`
+        : `Perkuat keamanan ${sectorLabel} Anda — lindungi pencapaian stabil ini dari risiko tak terduga dengan konsultasi ke Asuransi Astra.`;
     } else {
       // Loss aversion block
-      const porsiEquiv    = Math.round(expectedLoss / (omset / 200));
+      // PERBAIKAN BUG: formula lama (expectedLoss / (omset/200)) mengasumsikan
+      // harga per unit = Rp75.000 flat. Jika expected loss < Rp75.000, hasilnya
+      // desimal yang dibulatkan menjadi 0 → tampil "0 porsi/unit" yang jelas salah.
+      // Perbaikan: gunakan satuan JAM OMSET (omset/240 jam kerja per bulan) —
+      // selalu menghasilkan angka bermakna dan berlaku lintas sektor.
+      const omsetPerJam = omset / 240;
+      const ekuivJam = expectedLoss / omsetPerJam;
+      let ekuivLabel;
+      if (ekuivJam < 1) {
+        const menit = Math.max(1, Math.round(ekuivJam * 60));
+        ekuivLabel = `<strong>sekitar ${menit} menit omset</strong>`;
+      } else if (ekuivJam < 8) {
+        ekuivLabel = `<strong>${ekuivJam.toFixed(1)} jam omset</strong>`;
+      } else {
+        ekuivLabel = `<strong>${(ekuivJam / 8).toFixed(1)} hari kerja omset</strong>`;
+      }
+
       let lossText = '';
       if (selectedSector === 'kuliner') {
-        lossText = `Modal Anda tergerus halus sebesar <strong>${toRupiahStr(expectedLoss)}/bulan</strong>, setara dengan kehilangan <strong>${porsiEquiv} porsi dagangan</strong> Anda setiap bulannya — tanpa Anda sadari.`;
+        lossText = `Modal Anda tergerus halus sebesar <strong>${toRupiahStr(expectedLoss)}/bulan</strong> — setara ${ekuivLabel} yang hilang begitu saja, tanpa Anda sadari.`;
       } else if (selectedSector === 'dagang') {
-        lossText = `Stok Anda berpotensi menyusut senilai <strong>${toRupiahStr(expectedLoss)}/bulan</strong> akibat risiko gudang dan lingkungan, setara <strong>${porsiEquiv} unit barang dagang</strong> yang hilang begitu saja.`;
+        lossText = `Stok Anda berpotensi menyusut senilai <strong>${toRupiahStr(expectedLoss)}/bulan</strong> akibat risiko gudang dan lingkungan — setara ${ekuivLabel} yang tergerus tanpa kompensasi.`;
       } else if (selectedSector === 'jasa') {
-        lossText = `Pendapatan proyek Anda terancam bocor <strong>${toRupiahStr(expectedLoss)}/bulan</strong> akibat risiko data dan perangkat, setara dengan kehilangan <strong>${porsiEquiv} jam kerja tagihan klien</strong>.`;
+        lossText = `Pendapatan proyek Anda terancam bocor <strong>${toRupiahStr(expectedLoss)}/bulan</strong> akibat risiko data dan perangkat — setara ${ekuivLabel} yang hilang tanpa tagihan ke klien.`;
       } else {
-        lossText = `Usaha reparasi Anda berpotensi menanggung kerugian senilai <strong>${toRupiahStr(expectedLoss)}/bulan</strong> akibat risiko barang pelanggan, suku cadang, dan komplain garansi, setara <strong>${porsiEquiv} unit servis</strong> yang harus dikerjakan ulang tanpa bayaran.`;
+        lossText = `Usaha reparasi Anda berpotensi menanggung kerugian senilai <strong>${toRupiahStr(expectedLoss)}/bulan</strong> akibat risiko barang pelanggan dan garansi — setara ${ekuivLabel} yang harus dikerjakan ulang tanpa bayaran.`;
       }
       const zoneClass = zone === 'red' ? 'red' : 'yellow';
-      const ctaText = zone === 'red'
-        ? `PERINGATAN KRITIS: ${sectorLabel} Anda memerlukan transfer risiko segera. Dapatkan perlindungan asuransi mikro dari Astra sebelum risiko materialisasi.`
-        : `REKOMENDASI WASPADA: Kurangi eksposur risiko ${sectorLabel} Anda dengan asuransi mikro yang premi-nya jauh lebih kecil dari potensi kerugian.`;
+      // CTA sekarang berdasarkan jumlah rekomendasi dan apakah ada produk Astra.
+      // Jika rekomendasiList kosong (semua slider = 1, kondisi sangat baik):
+      // tetap tampilkan link Astra tapi dengan framing "untuk berjaga-jaga".
+      const adaRekomendasiAstra = rekomendasiList.some(r => !!r.astraMatch);
+      let ctaText;
+      if (rekomendasiList.length === 0) {
+        ctaText = `Kondisi audit ${sectorLabel} Anda sangat baik. Konsultasi ke Asuransi Astra tetap bisa dilakukan sebagai langkah berjaga-jaga untuk mengamankan pencapaian usaha Anda.`;
+      } else if (zone === 'red') {
+        ctaText = adaRekomendasiAstra
+          ? `PERINGATAN KRITIS: ${sectorLabel} Anda memerlukan transfer risiko segera. Dapatkan perlindungan dari Asuransi Astra sebelum risiko materialisasi.`
+          : `PERINGATAN KRITIS: ${sectorLabel} Anda memerlukan transfer risiko segera untuk faktor risiko yang teridentifikasi. Konsultasikan opsi proteksi yang sesuai sebelum risiko materialisasi.`;
+      } else {
+        ctaText = adaRekomendasiAstra
+          ? `REKOMENDASI WASPADA: Kurangi eksposur risiko ${sectorLabel} Anda dengan proteksi dari Asuransi Astra yang preminya jauh lebih kecil dari potensi kerugian.`
+          : `REKOMENDASI WASPADA: Kurangi eksposur risiko ${sectorLabel} Anda dengan proteksi yang sesuai — preminya umumnya jauh lebih kecil dari potensi kerugian.`;
+      }
 
       actionBlock.innerHTML = `
         <div class="loss-aversion ${zoneClass}">
@@ -1466,6 +1933,54 @@
       document.getElementById('cert-cta-block').style.display = 'flex';
       document.getElementById('cert-cta-text').textContent = ctaText;
     }
+
+    // ── Catat data audit ini untuk opsi "Simpan ke Riwayat" ──
+    // Data disimpan HANYA di memori sampai pengguna memilih menyimpannya
+    // dengan PIN sendiri (lihat modul keamanan & riwayat di akhir script).
+    // Nama usaha & nama pemilik SENGAJA tidak disertakan demi minimalisasi
+    // data (data minimization) — riwayat hanya menyimpan apa yang perlu
+    // untuk melacak progres risiko, bukan identitas pribadi.
+    lastAuditEntry = {
+      tanggal: new Date().toISOString(),
+      sektor: selectedSector,
+      zone: zone,
+      pTotal: pTotal,
+      pInternal: pInternal,
+      pExternal: pExternal,
+      expectedLoss: expectedLoss,
+      rasioEksposur: rasioEksposur,
+      // Indikator keberhasilan program: BUKAN diukur dari perbaikan faktor
+      // eksternal (banjir/kriminalitas) yang di luar kendali & butuh biaya
+      // infrastruktur besar untuk diperbaiki, melainkan dari komitmen nyata
+      // UMKM terhadap proteksi asuransi — sesuai arah keberhasilan program
+      // yang ditetapkan.
+      statusProteksi: statusProteksi,
+      // Jawaban atas kartu "Selamat Datang Kembali" (jika audit ini adalah
+      // audit ulang). null jika ini audit pertama di perangkat ini — TIDAK
+      // PERNAH dipaksa diisi pada audit pertama.
+      tindakLanjutSebelumnya: behaviorChangeResponse,
+    };
+
+    // ── Simpan nama ke cache lokal untuk auto-fill audit berikutnya ──
+    const namaUsahaVal = document.getElementById('nama-usaha').value;
+    const namaPemilikVal = document.getElementById('nama-pemilik').value;
+    if (namaUsahaVal || namaPemilikVal) setNamesCache(namaUsahaVal, namaPemilikVal);
+
+    // ── Catat & laporkan statistik agregat anonim (untuk pelaporan dampak) ──
+    // isAuditUlang dicek SEBELUM jejak sesi ditimpa, agar tahu apakah audit
+    // ini audit pertama atau audit ulang di perangkat ini.
+    const isAuditUlang = !!getLastSession();
+    trackEvent('audit-selesai', { sektor: selectedSector, zona: zone, ulang: isAuditUlang ? 'ya' : 'tidak' });
+
+    // ── Perbarui jejak sesi ringan (non-sensitif) untuk audit berikutnya ──
+    // Faktor dominan dari audit INI disimpan sebagai acuan kartu "Selamat
+    // Datang Kembali" pada kunjungan selanjutnya, sehingga pertanyaan
+    // tindak lanjut selalu mengacu pada temuan paling baru.
+    setLastSession({
+      tanggal: new Date().toISOString(),
+      faktorTerkait: faktorDominan.terkait,
+      sektor: selectedSector,
+    });
 
     // ── Show Certificate ──
     document.getElementById('wizard-section').style.display = 'none';
@@ -1518,16 +2033,292 @@
   /* ─────── RESET ─────── */
   function resetWizard() {
     selectedSector = null;
+    lastAuditEntry = null;
+    behaviorChangeResponse = null;
     document.querySelectorAll('.sector-card').forEach(c => c.classList.remove('selected'));
     document.getElementById('omset').value = '';
     document.getElementById('aset').value = '';
     document.getElementById('nama-usaha').value = '';
     document.getElementById('nama-pemilik').value = '';
+    document.getElementById('status-proteksi').value = '';
+    resetNamesAutoFill(); // kembalikan field nama ke form biasa (kosong)
+    const simpanPin = document.getElementById('simpan-pin-input');
+    const simpanStatus = document.getElementById('simpan-riwayat-status');
+    if (simpanPin) simpanPin.value = '';
+    if (simpanStatus) simpanStatus.textContent = '';
     document.getElementById('certificate-section').classList.remove('show');
     document.getElementById('wizard-section').style.display = '';
+    renderWelcomeBackCard(); // refresh kartu dengan faktor dominan terbaru
     goToStage(1);
     document.getElementById('wizard-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
+  /* ════════════════════════════════════════════════════════════════
+     MODUL KEAMANAN & RIWAYAT AUDIT
+     ════════════════════════════════════════════════════════════════
+     Prinsip keamanan yang diterapkan:
+     1. ZERO TRANSMISSION — data riwayat TIDAK PERNAH dikirim ke server,
+        API, atau pihak ketiga manapun. Seluruhnya diproses & disimpan
+        di browser pengguna sendiri (localStorage). Tidak ada database
+        terpusat yang bisa diretas/dibocorkan, karena memang tidak ada
+        database terpusat sama sekali.
+     2. ENKRIPSI DI SISI KLIEN — setiap entri riwayat dienkripsi dengan
+        AES-256-GCM (Web Crypto API bawaan browser, bukan library pihak
+        ketiga) menggunakan kunci yang diturunkan dari PIN pengguna lewat
+        PBKDF2 (150.000 iterasi). Data mentah tidak pernah tersimpan
+        dalam bentuk plain text di localStorage.
+     3. PIN TIDAK DISIMPAN — PIN hanya ada sesaat di memori untuk
+        menurunkan kunci enkripsi, lalu dibuang. Tidak ada cara bagi
+        siapa pun (termasuk pemilik platform) untuk memulihkan PIN yang
+        lupa atau membuka riwayat tanpa PIN yang benar.
+     4. KONTROL PENUH PENGGUNA — tombol "Hapus Semua Riwayat" tersedia
+        agar pengguna bisa menghapus seluruh data kapan pun (hak atas
+        data sendiri).
+     CATATAN JUJUR: tidak ada sistem yang bisa diklaim "100% aman".
+     Pendekatan ini meniadakan risiko kebocoran lewat peretasan server/
+     database (karena tidak ada server/database), tapi keamanan akhirnya
+     tetap bergantung pada: (a) PIN yang dipilih cukup kuat, (b) perangkat
+     pengguna sendiri tidak terinfeksi malware, dan (c) situs ini diakses
+     lewat HTTPS saat di-deploy (wajib, agar Web Crypto API aktif & agar
+     kode halaman tidak bisa disusupi saat transit).
+     ════════════════════════════════════════════════════════════════ */
+
+  const RIWAYAT_KEY = 'hitungrisiko_riwayat_v1';
+  let lastAuditEntry = null; // diisi oleh generateCertificate() setiap kali sertifikat dibuat
+
+  // Menurunkan kunci AES-256 dari PIN + salt menggunakan PBKDF2.
+  async function deriveKey(pin, saltBytes) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(pin), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: saltBytes, iterations: 150000, hash: 'SHA-256' },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt']
+    );
+  }
+
+  async function encryptEntry(pin, dataObj) {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await deriveKey(pin, salt);
+    const enc = new TextEncoder();
+    const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(JSON.stringify(dataObj)));
+    return { salt: Array.from(salt), iv: Array.from(iv), data: Array.from(new Uint8Array(ciphertext)) };
+  }
+
+  async function decryptEntry(pin, encObj) {
+    const salt = new Uint8Array(encObj.salt);
+    const iv = new Uint8Array(encObj.iv);
+    const key = await deriveKey(pin, salt);
+    const ciphertext = new Uint8Array(encObj.data);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+
+  function getRiwayatRaw() {
+    try {
+      const raw = localStorage.getItem(RIWAYAT_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) { return []; }
+  }
+  function saveRiwayatRaw(list) {
+    try { localStorage.setItem(RIWAYAT_KEY, JSON.stringify(list)); } catch (e) {
+      console.error('Gagal menyimpan riwayat (localStorage penuh/diblokir):', e);
+    }
+  }
+
+  async function simpanKeRiwayat() {
+    const pinInput = document.getElementById('simpan-pin-input');
+    const statusEl = document.getElementById('simpan-riwayat-status');
+    const btn = document.getElementById('btn-simpan-riwayat');
+    const pin = pinInput.value;
+
+    if (!pin || pin.length < 4) {
+      statusEl.style.color = 'var(--red)';
+      statusEl.textContent = 'PIN minimal 4 karakter.';
+      return;
+    }
+    if (!lastAuditEntry) {
+      statusEl.style.color = 'var(--red)';
+      statusEl.textContent = 'Tidak ada data audit untuk disimpan.';
+      return;
+    }
+
+    btn.disabled = true;
+    statusEl.style.color = 'var(--slate)';
+    statusEl.textContent = 'Mengenkripsi & menyimpan...';
+
+    try {
+      const encrypted = await encryptEntry(pin, lastAuditEntry);
+      const list = getRiwayatRaw();
+      list.push(encrypted);
+      saveRiwayatRaw(list);
+      statusEl.style.color = 'var(--green)';
+      statusEl.textContent = '✓ Tersimpan terenkripsi di perangkat ini. Gunakan PIN ini lagi untuk melihatnya di menu "Riwayat Audit".';
+      pinInput.value = '';
+    } catch (e) {
+      console.error('Gagal mengenkripsi riwayat:', e);
+      statusEl.style.color = 'var(--red)';
+      statusEl.textContent = 'Gagal menyimpan riwayat. Coba lagi.';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function openRiwayatModal() {
+    document.getElementById('riwayat-modal').classList.remove('hidden');
+    document.getElementById('riwayat-pin-form').classList.remove('hidden');
+    document.getElementById('riwayat-list-container').classList.add('hidden');
+    document.getElementById('riwayat-error').classList.add('hidden');
+    document.getElementById('riwayat-pin-input').value = '';
+  }
+  function closeRiwayatModal() {
+    document.getElementById('riwayat-modal').classList.add('hidden');
+  }
+
+  async function bukaRiwayat() {
+    const pin = document.getElementById('riwayat-pin-input').value;
+    const errorEl = document.getElementById('riwayat-error');
+    errorEl.classList.add('hidden');
+
+    if (!pin) return;
+
+    const list = getRiwayatRaw();
+    const hasil = [];
+    for (const encEntry of list) {
+      try {
+        const decoded = await decryptEntry(pin, encEntry);
+        hasil.push(decoded);
+      } catch (e) {
+        // PIN tidak cocok untuk entri ini — dilewati (mendukung beberapa
+        // pengguna/PIN berbeda berbagi perangkat yang sama tanpa saling
+        // melihat riwayat satu sama lain).
+      }
+    }
+
+    if (hasil.length === 0) {
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    hasil.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+    const sectorLabelsRiwayat = { kuliner: 'Kuliner & F&B', dagang: 'Dagang & Ritel', jasa: 'Jasa & Digital', reparasi: 'Reparasi & Elektronik' };
+    const zoneColor = { red: 'var(--red)', yellow: 'var(--yellow)', green: 'var(--green)' };
+    const zoneLabelShort = { red: 'Merah', yellow: 'Kuning', green: 'Hijau' };
+    const statusProteksiLabel = {
+      belum: { teks: 'Belum Mempersiapkan Proteksi', warna: 'var(--red)', ikon: '○' },
+      menabung: { teks: 'Sedang Menabung untuk Asuransi', warna: 'var(--yellow)', ikon: '◐' },
+      berlangganan: { teks: 'Sudah Berlangganan Asuransi', warna: 'var(--green)', ikon: '●' },
+    };
+
+    // ── Ringkasan Indeks Kesadaran Proteksi ──
+    // BUKAN diklaim sebagai "keberhasilan program" — platform ini tidak
+    // berjualan dan tidak menargetkan konversi langganan asuransi. Angka
+    // ini murni potret kesadaran (awareness) literasi: sejauh mana audit
+    // membuat UMKM mulai memikirkan proteksi, sebagai salah satu indikator
+    // dampak literasi keuangan, bukan satu-satunya tolok ukur keberhasilan.
+    const totalAudit = hasil.length;
+    const jmlBerlangganan = hasil.filter(h => h.statusProteksi === 'berlangganan').length;
+    const jmlMenabung = hasil.filter(h => h.statusProteksi === 'menabung').length;
+    const persenSiapProteksi = Math.round(((jmlBerlangganan + jmlMenabung) / totalAudit) * 100);
+
+    const ringkasanHtml = `
+      <div style="background:rgba(212,175,55,0.07);border:1.5px solid rgba(212,175,55,0.25);border-radius:var(--r-xl);padding:1.1rem 1.4rem;margin-bottom:1.25rem;">
+        <p style="font-size:0.72rem;font-weight:700;color:var(--gold-dk);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.5rem;">📊 Indeks Kesadaran Proteksi</p>
+        <p style="font-size:0.85rem;color:var(--navy);font-weight:700;margin-bottom:0.3rem;">${persenSiapProteksi}% audit Anda menunjukkan kesadaran terhadap proteksi usaha</p>
+        <p style="font-size:0.74rem;color:var(--slate);line-height:1.5;">${jmlBerlangganan} audit berstatus <strong>sudah berlangganan</strong>, ${jmlMenabung} audit <strong>sedang menabung</strong> untuk asuransi, dari total ${totalAudit} audit tersimpan. Angka ini bersifat informatif untuk Anda sendiri — bukan target atau kewajiban.</p>
+      </div>`;
+
+    // ── Tren Perbaikan Risiko: Internal (terkendali) vs Eksternal (konteks) ──
+    // PRINSIP: hanya tren Risiko INTERNAL (operasional — kondisi peralatan,
+    // higienitas, keamanan data, dst.) yang dipakai sebagai ukuran "Hasil
+    // Akhir" keberhasilan program, KARENA inilah yang sepenuhnya berada di
+    // bawah kendali UMKM dan bisa diperbaiki tanpa biaya infrastruktur besar.
+    // Risiko EKSTERNAL (banjir, kriminalitas area) tetap ditampilkan untuk
+    // konteks diagnosis, tapi SECARA EKSPLISIT tidak dihitung sebagai ukuran
+    // keberhasilan — karena memperbaikinya umumnya di luar kendali & biaya
+    // UMKM (mis. infrastruktur drainase wilayah).
+    let trenHtml = '';
+    const perSektor = {};
+    hasil.forEach(h => {
+      if (!perSektor[h.sektor]) perSektor[h.sektor] = [];
+      perSektor[h.sektor].push(h);
+    });
+    const trenPerSektorHtml = Object.keys(perSektor).map(sek => {
+      const entries = perSektor[sek].slice().sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+      if (entries.length < 2) return null; // butuh minimal 2 audit untuk membentuk tren
+      const pertama = entries[0];
+      const terakhir = entries[entries.length - 1];
+      const deltaInternal = (pertama.pInternal - terakhir.pInternal) * 100; // positif = membaik (turun)
+      const deltaExternal = (pertama.pExternal - terakhir.pExternal) * 100;
+      const internalMembaik = deltaInternal > 0.05;
+      const internalMemburuk = deltaInternal < -0.05;
+      const internalWarna = internalMembaik ? 'var(--green)' : (internalMemburuk ? 'var(--red)' : 'var(--slate)');
+      const internalIkon = internalMembaik ? '↓ Membaik' : (internalMemburuk ? '↑ Memburuk' : '→ Stabil');
+      return `
+        <div style="border:1px solid var(--slate-lt);border-radius:var(--r-lg);padding:1rem 1.2rem;margin-bottom:0.75rem;">
+          <p style="font-size:0.8rem;font-weight:700;color:var(--navy);margin-bottom:0.6rem;">${sectorLabelsRiwayat[sek] || sek} <span style="font-weight:400;color:var(--slate);font-size:0.7rem;">(${entries.length} audit, ${new Date(pertama.tanggal).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})} → ${new Date(terakhir.tanggal).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})})</span></p>
+          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+            <div>
+              <div style="font-size:0.68rem;color:var(--slate);">Risiko Internal (terkendali)</div>
+              <div style="font-size:0.82rem;font-weight:700;color:${internalWarna};">${internalIkon} — ${(pertama.pInternal*100).toFixed(1)}% → ${(terakhir.pInternal*100).toFixed(1)}%</div>
+            </div>
+            <div>
+              <div style="font-size:0.68rem;color:var(--slate);">Risiko Eksternal (konteks, di luar kendali)</div>
+              <div style="font-size:0.82rem;font-weight:700;color:var(--slate);">${(pertama.pExternal*100).toFixed(1)}% → ${(terakhir.pExternal*100).toFixed(1)}%</div>
+            </div>
+          </div>
+        </div>`;
+    }).filter(Boolean).join('');
+
+    if (trenPerSektorHtml) {
+      trenHtml = `
+        <div style="background:rgba(22,163,74,0.05);border:1.5px solid rgba(22,163,74,0.2);border-radius:var(--r-xl);padding:1.1rem 1.4rem;margin-bottom:1.25rem;">
+          <p style="font-size:0.72rem;font-weight:700;color:var(--green);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.5rem;">📈 Tren Perbaikan Risiko Operasional</p>
+          <p style="font-size:0.74rem;color:var(--slate);line-height:1.55;margin-bottom:0.85rem;">Hanya tren <strong>Risiko Internal</strong> yang dihitung sebagai hasil keberhasilan program — karena ini sepenuhnya bisa Anda kendalikan (kondisi peralatan, higienitas, keamanan data, dsb). Risiko Eksternal ditampilkan sebagai konteks lingkungan usaha, bukan tolok ukur keberhasilan Anda.</p>
+          ${trenPerSektorHtml}
+        </div>`;
+    }
+
+    const listHtml = hasil.map(h => {
+      const tgl = new Date(h.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      const sp = statusProteksiLabel[h.statusProteksi] || { teks: '—', warna: 'var(--slate)', ikon: '○' };
+      return `
+        <div style="border:1px solid var(--slate-lt);border-radius:var(--r-lg);padding:0.9rem 1.1rem;margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:0.7rem;color:var(--slate);">${tgl}</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--navy);">${sectorLabelsRiwayat[h.sektor] || h.sektor}</div>
+            <div style="font-size:0.7rem;color:${sp.warna};font-weight:600;margin-top:2px;">${sp.ikon} ${sp.teks}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.68rem;font-weight:700;color:${zoneColor[h.zone]};text-transform:uppercase;letter-spacing:0.05em;">● Zona ${zoneLabelShort[h.zone]}</div>
+            <div style="font-size:0.78rem;color:var(--navy);">P(Total): <strong>${(h.pTotal * 100).toFixed(2)}%</strong></div>
+          </div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('riwayat-list').innerHTML = `
+      ${ringkasanHtml}
+      ${trenHtml}
+      <p style="font-size:0.74rem;color:var(--slate);margin-bottom:0.85rem;">${hasil.length} audit ditemukan untuk PIN ini, diurutkan dari yang terbaru.</p>
+      ${listHtml}
+    `;
+    document.getElementById('riwayat-pin-form').classList.add('hidden');
+    document.getElementById('riwayat-list-container').classList.remove('hidden');
+  }
+
+  function hapusSemuaRiwayat() {
+    if (!confirm('Hapus SEMUA riwayat audit dari perangkat ini? Tindakan ini tidak dapat dibatalkan.')) return;
+    localStorage.removeItem(RIWAYAT_KEY);
+    closeRiwayatModal();
+  }
+
+  // ── Inisialisasi saat halaman dimuat ──
+  renderWelcomeBackCard();
+  applyNamesAutoFill();
 </script>
 
 </body>
